@@ -1,0 +1,31 @@
+{
+  "categories": [
+    {
+      "items": [
+        { "label": "Andre", "solutionGroupId": 1 },
+        { "label": "Danny", "solutionGroupId": 2 },
+        { "label": "Amelia", "solutionGroupId": 3 }
+      ],
+      "label": "Cookie"
+    },
+    {
+      "items": [
+        { "label": "Chocolate Chip", "solutionGroupId": 1 },
+        { "label": "Peanute Butter", "solutionGroupId": 2 },
+        { "label": "Double Chocalate", "solutionGroupId": 3 }
+      ],
+      "label": "People"
+    },
+    {
+      "items": [
+        { "label": "Chocolate Milk", "solutionGroupId": 3 },
+        { "label": "Milk", "solutionGroupId": 1 },
+        { "label": "Coke", "solutionGroupId": 2 }
+      ],
+      "label": "Drink"
+    }
+  ],
+  "clues": [
+    { "content": "This is a clue" }
+  ]
+}

@@ -1,0 +1,14 @@
+<ng-container *ngIf="gridVm">
+  <div *ngFor="let r of gridVm.categoryRows">
+    Row:
+    <div *ngFor="let m of r">
+      <div>{{m.catXId}} {{m.catYId}}</div>
+      <div *ngFor="let i of m.itemMatrix">
+        <div *ngFor="let j of i">
+          {{j.itemXId}} {{j.itemYId}}
+          <app-problem-grid-item></app-problem-grid-item>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
