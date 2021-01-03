@@ -8,10 +8,10 @@ export function problemDefToGridVm(def: ProblemDef): ProblemGridVm {
   const yCats = def.categories.slice(1);
   const categoryRows: ProblemGridVmCategoryMatrix[][] = [];
 
-  for (let idxX = 0; idxX < dimCatsCount; idxX++) {
+  for (let yIdx = 0; yIdx < dimCatsCount; yIdx++) {
     const row: ProblemGridVmCategoryMatrix[] = [];
-    for (let idxY = idxX + 1; idxY < dimCatsCount + 1; idxY++) {
-      row.push(createCategoryMatrix(xCats[idxX], yCats[idxY]));
+    for (let xIdx = 0; xIdx < dimCatsCount - yIdx; xIdx++) {
+      row.push(createCategoryMatrix(xCats[xIdx], yCats[yIdx]));
     }
     categoryRows.push(row);
   }
@@ -25,6 +25,6 @@ function createCategoryMatrix(catX: ProblemCategory, catY: ProblemCategory): Pro
   return {
     catX,
     catY,
-    itemMatrix: catX.items.map(itemX => catY.items.map(itemY => ({ state: 'open', itemX, itemY })))
+    itemMatrix: catY.items.map(itemY => catX.items.map(itemX => ({ state: 'open', itemX, itemY })))
   };
 }

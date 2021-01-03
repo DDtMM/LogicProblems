@@ -15,8 +15,8 @@ export class ProblemGridComponent implements OnInit {
   gridVm?: ProblemGridVm;
 
   @Input()
-  set problem(value: ProblemDef) {
-    this.gridVm = problemDefToGridVm(value);
+  set problem(value: ProblemDef | undefined) {
+    this.gridVm = value ? problemDefToGridVm(value) : undefined;
   }
 
   constructor() { }

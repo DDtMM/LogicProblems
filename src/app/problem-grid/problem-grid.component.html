@@ -1,12 +1,24 @@
-<ng-container *ngIf="gridVm">
-  <div *ngFor="let r of gridVm.categoryRows">
-    Row:
-    <div *ngFor="let m of r">
-      <div>{{m.catXId}} {{m.catYId}}</div>
-      <div *ngFor="let i of m.itemMatrix">
-        <div *ngFor="let j of i">
-          {{j.itemXId}} {{j.itemYId}}
-          <app-problem-grid-item></app-problem-grid-item>
+<ng-container *ngIf="gridVm?.categoryRows">
+  <div *ngFor="let r of gridVm?.categoryRows; let index = index">
+    <div *ngIf="index === 0" style="display: flex; flex-direction: row">
+      <div style="width: 40px">
+      </div>
+      <div *ngFor="let m of r" style="background: red; color: white;">
+        {{m.catX.label}}
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: row;">
+      <div style="margin: auto 0; width: 40px">
+        <div style="transform: rotate(-90deg); color:red;">
+          {{r[0].catY.label}}
+        </div>
+      </div>
+      <div *ngFor="let m of r" style="display: flex; flex-direction: row;">
+        <div *ngFor="let i of m.itemMatrix">
+          <div *ngFor="let j of i">
+            {{j.itemX.label}} {{j.itemY.label}}
+            <app-problem-grid-item></app-problem-grid-item>
+          </div>
         </div>
       </div>
     </div>
