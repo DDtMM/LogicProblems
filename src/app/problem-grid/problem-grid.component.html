@@ -1,26 +1,40 @@
-<ng-container *ngIf="gridVm?.categoryRows">
-  <div *ngFor="let r of gridVm?.categoryRows; let index = index">
-    <div *ngIf="index === 0" style="display: flex; flex-direction: row">
-      <div style="width: 40px">
+<div *ngIf="gridVm?.categoryRows">
+  <div class="outer-grid" *ngFor="let r of gridVm?.categoryRows; let yIndex = index">
+
+    <!-- header row -->
+    <ng-container *ngIf="yIndex === 0">
+      <div class="vert-label vert-cat-label">
       </div>
-      <div *ngFor="let m of r" style="background: red; color: white;">
+      <div *ngFor="let m of r" class="x-label">
         {{m.catX.label}}
       </div>
-    </div>
-    <div style="display: flex; flex-direction: row;">
-      <div style="margin: auto 0; width: 40px">
-        <div style="transform: rotate(-90deg); color:red;">
-          {{r[0].catY.label}}
-        </div>
+      <div class="vert-label vert-cat-label">
+
       </div>
-      <div *ngFor="let m of r" style="display: flex; flex-direction: row;">
-        <div *ngFor="let i of m.itemMatrix">
-          <div *ngFor="let j of i">
-            {{j.itemX.label}} {{j.itemY.label}}
-            <app-problem-grid-item></app-problem-grid-item>
+      <div *ngFor="let m of r; let xIndex = index" class="x-item-label-grid">
+        <div *ngIf="xIndex === 0"></div>
+        <div *ngFor="let i of m.catX.items" class="vert-label vert-item-label" >
+          <div class="vert-label-inner">
+            {{i.label}}
           </div>
         </div>
       </div>
+    </ng-container>
+
+    <!-- grid items -->
+    <div class="vert-label vert-cat-label">
+      <div class="vert-label-inner">
+        {{r[0].catY.label}}
+      </div>
     </div>
+    <div *ngFor="let m of r; let xIndex = index" class="item-grid">
+      <ng-container *ngFor="let i of m.itemMatrix" >
+        <div *ngIf="xIndex === 0 " class="row-start">{{i[0].itemY.label}}</div>
+        <div *ngFor="let j of i; let index = index" [ngClass]="{ 'row-start': xIndex !== 0 && index === 0 }" >
+          <app-problem-grid-item></app-problem-grid-item>
+        </div>
+      </ng-container>
+    </div>
+
   </div>
-</ng-container>
+</div>

@@ -7,8 +7,7 @@ import { ProblemGridVm } from './problem-grid-vm';
 @Component({
   selector: 'app-problem-grid',
   templateUrl: './problem-grid.component.html',
-  styles: [
-  ]
+  styleUrls: ['./problem-grid.component.scss']
 })
 export class ProblemGridComponent implements OnInit {
 
