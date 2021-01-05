@@ -28,12 +28,14 @@ export class ProblemGridComponent implements OnInit {
 
   getCatLabelGridRange(cats: ProblemCategory[], cat: ProblemCategory) {
     const itemsPrior = this.getPriorCatsCount(cats, cat);
-    return `${8 + itemsPrior} / span ${cat.items.length}`;
+    // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
+    return `${3 + itemsPrior} / span ${cat.items.length}`;
   }
 
   getItemGridIndex(cats: ProblemCategory[], cat: ProblemCategory, item: ProblemItem) {
     const itemsPrior = this.getPriorCatsCount(cats, cat);
-    return `${8 + itemsPrior + cat.items.indexOf(item)} / span 1`;
+    // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
+    return `${3 + itemsPrior + cat.items.indexOf(item)} / span 1`;
   }
 
   toggleState(mItem: ProblemGridItemVm) {

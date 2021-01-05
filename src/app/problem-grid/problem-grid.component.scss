@@ -1,8 +1,11 @@
 .grid {
   display: grid;
+  grid-template-columns: 20px 100px;
+  grid-template-rows: 20px 100px;
   grid-auto-columns: 20px;
   grid-auto-rows: 20px;
-
+  font-size: 10pt;
+  line-height: 20px;
 }
 
 .cat-label {

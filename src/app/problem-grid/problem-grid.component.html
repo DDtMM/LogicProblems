@@ -4,7 +4,7 @@
       {{cat.label}}
     </div>
     <div *ngFor="let item of cat.items" class="vert-label item-label"
-      [style.gridColumn]="getItemGridIndex(gridVm!.xCats, cat, item)" [style.gridRow]="'2 / span 6'">
+      [style.gridColumn]="getItemGridIndex(gridVm!.xCats, cat, item)" [style.gridRow]="'2 / span 1'">
       <div>
         {{item.label}}
       </div>
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div *ngFor="let item of cat.items" class="item-label" [style.textAlign]="'right'"
-      [style.gridRow]="getItemGridIndex(gridVm!.yCats, cat, item)" [style.gridColumn]="'2 / span 6'">
+      [style.gridRow]="getItemGridIndex(gridVm!.yCats, cat, item)" [style.gridColumn]="'2 / span 1'">
       <div>
         {{item.label}}
       </div>
