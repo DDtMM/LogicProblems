@@ -9,5 +9,7 @@ export interface ProblemGridVmCategoryMatrix {
 }
 
 export interface ProblemGridVm {
-  categoryRows: ProblemGridVmCategoryMatrix[][]
+  categoryRows: ProblemGridVmCategoryMatrix[][];
+  xCats: ProblemCategory[];
+  yCats: ProblemCategory[];
 }

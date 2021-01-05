@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { ProblemCategory } from '../models/problem-category';
 import { ProblemDef } from '../models/problem-def';
+import { ProblemItem } from '../models/problem-item';
+import { ProblemGridItemVm } from '../problem-grid-item/problem-grid-item-vm';
 import { problemDefToGridVm } from './problem-def-to-grid-vm';
 import { ProblemGridVm } from './problem-grid-vm';
 
@@ -23,7 +26,35 @@ export class ProblemGridComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private ProblemDefToVm(def: ProblemDef) {
+  getCatLabelGridRange(cats: ProblemCategory[], cat: ProblemCategory) {
+    const itemsPrior = this.getPriorCatsCount(cats, cat);
+    return `${8 + itemsPrior} / span ${cat.items.length}`;
+  }
 
+  getItemGridIndex(cats: ProblemCategory[], cat: ProblemCategory, item: ProblemItem) {
+    const itemsPrior = this.getPriorCatsCount(cats, cat);
+    return `${8 + itemsPrior + cat.items.indexOf(item)} / span 1`;
+  }
+
+  toggleState(mItem: ProblemGridItemVm) {
+    switch (mItem.state) {
+      case 'accept':
+        mItem.state = 'open';
+        break;
+      case 'reject':
+        mItem.state = 'accept';
+        break;
+      case 'open':
+        mItem.state = 'reject';
+        break;
+    }
+  }
+
+  private getPriorCatsCount(cats: ProblemCategory[] | undefined, cat: ProblemCategory) {
+    const catIndex = cats?.indexOf(cat) ?? -1;
+    return (cats || [])
+      .slice(0, catIndex)
+      .map(x => x.items.length)
+      .reduce((prev, cur) => prev + cur, 0);
   }
 }
