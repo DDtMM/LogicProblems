@@ -1,12 +1,14 @@
 <div *ngIf="gridVm" class="grid">
   <ng-container *ngFor="let cat of gridVm!.xCats">
-    <div class="cat-label" [style.gridColumn]="getCatLabelGridRange(gridVm!.xCats, cat)" [style.gridRow]="1">
+    <div class="horiz-label cat-label" [style.gridColumn]="getCatLabelGridRange(gridVm!.xCats, cat)" [style.gridRow]="1">
       {{cat.label}}
     </div>
     <div *ngFor="let item of cat.items" class="vert-label item-label"
       [style.gridColumn]="getItemGridIndex(gridVm!.xCats, cat, item)" [style.gridRow]="'2 / span 1'">
       <div>
-        {{item.label}}
+        <div>
+          {{item.label}}
+        </div>
       </div>
     </div>
   </ng-container>
@@ -14,24 +16,26 @@
     <div class="cat-label vert-label" [style.gridRow]="getCatLabelGridRange(gridVm!.yCats, cat)"
       [style.gridColumn]="'1 / span 1'">
       <div>
-        {{cat.label}}
+        <div>
+          {{cat.label}}
+        </div>
       </div>
     </div>
-    <div *ngFor="let item of cat.items" class="item-label" [style.textAlign]="'right'"
+    <div *ngFor="let item of cat.items" class="horiz-label item-label" [style.textAlign]="'right'"
       [style.gridRow]="getItemGridIndex(gridVm!.yCats, cat, item)" [style.gridColumn]="'2 / span 1'">
       <div>
         {{item.label}}
       </div>
     </div>
   </ng-container>
-  <ng-container *ngFor="let catRows of gridVm!.categoryRows">
-    <ng-container *ngFor="let catRow of catRows;">
-      <ng-container *ngFor="let row of catRow.itemMatrix">
-        <div *ngFor="let mItem of row" class="item"
-        [ngClass]="mItem.state"
+  <ng-container *ngFor="let matricesRow of gridVm!.matrices">
+    <ng-container *ngFor="let catMatrix of matricesRow;">
+      <ng-container *ngFor="let itemRow of catMatrix.itemMatrix; let rowIndex = index">
+        <div *ngFor="let mItem of itemRow; let colIndex = index" class="item"
+        [ngClass]="getItemClass(catMatrix, mItem, rowIndex, colIndex)"
         (click)="toggleState(mItem)"
-      [style.gridRow]="getItemGridIndex(gridVm!.yCats, catRow.catY, mItem.itemY)"
-      [style.gridColumn]="getItemGridIndex(gridVm!.xCats, catRow.catX, mItem.itemX)">
+        [style.gridRow]="getItemGridIndex(gridVm!.yCats, catMatrix.catY, mItem.itemY)"
+        [style.gridColumn]="getItemGridIndex(gridVm!.xCats, catMatrix.catX, mItem.itemX)">
 
       </div>
       </ng-container>

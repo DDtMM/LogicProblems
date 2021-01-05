@@ -17,7 +17,7 @@ export function problemDefToGridVm(def: ProblemDef): ProblemGridVm {
   }
 
   return {
-    categoryRows,
+    matrices: categoryRows,
     xCats,
     yCats
   };

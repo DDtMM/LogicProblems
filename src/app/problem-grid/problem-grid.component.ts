@@ -5,7 +5,7 @@ import { ProblemDef } from '../models/problem-def';
 import { ProblemItem } from '../models/problem-item';
 import { ProblemGridItemVm } from '../problem-grid-item/problem-grid-item-vm';
 import { problemDefToGridVm } from './problem-def-to-grid-vm';
-import { ProblemGridVm } from './problem-grid-vm';
+import { ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
 @Component({
   selector: 'app-problem-grid',
@@ -32,6 +32,22 @@ export class ProblemGridComponent implements OnInit {
     return `${3 + itemsPrior} / span ${cat.items.length}`;
   }
 
+  getItemClass(matrix: ProblemGridVmCategoryMatrix, item: ProblemGridItemVm, rowIndex: number, colIndex: number) {
+    const cssClass: string[] = [ item.state ];
+    if (rowIndex === 0) {
+      cssClass.push('border-top');
+    }
+    if (rowIndex === matrix.catY.items.length - 1) {
+      cssClass.push('border-bottom');
+    }
+    if (colIndex === 0) {
+      cssClass.push('border-left');
+    }
+    if (colIndex === matrix.catX.items.length - 1) {
+      cssClass.push('border-right');
+    }
+    return cssClass;
+  }
   getItemGridIndex(cats: ProblemCategory[], cat: ProblemCategory, item: ProblemItem) {
     const itemsPrior = this.getPriorCatsCount(cats, cat);
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
