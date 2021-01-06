@@ -32,19 +32,15 @@ export class ProblemGridComponent implements OnInit {
     return `${3 + itemsPrior} / span ${cat.items.length}`;
   }
 
-  getItemClass(matrix: ProblemGridVmCategoryMatrix, item: ProblemGridItemVm, rowIndex: number, colIndex: number) {
+  getMatrixItemClass(matrix: ProblemGridVmCategoryMatrix, item: ProblemGridItemVm) {
     const cssClass: string[] = [ item.state ];
-    if (rowIndex === 0) {
-      cssClass.push('border-top');
+    const yBorder = this.getYBorder(matrix.catY, item.itemY);
+    const xBorder = this.getXBorder(matrix.catX, item.itemX);
+    if (xBorder) {
+      cssClass.push(xBorder);
     }
-    if (rowIndex === matrix.catY.items.length - 1) {
-      cssClass.push('border-bottom');
-    }
-    if (colIndex === 0) {
-      cssClass.push('border-left');
-    }
-    if (colIndex === matrix.catX.items.length - 1) {
-      cssClass.push('border-right');
+    if (yBorder) {
+      cssClass.push(yBorder);
     }
     return cssClass;
   }
@@ -52,6 +48,19 @@ export class ProblemGridComponent implements OnInit {
     const itemsPrior = this.getPriorCatsCount(cats, cat);
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
     return `${3 + itemsPrior + cat.items.indexOf(item)} / span 1`;
+  }
+  getBorderClass(cat: ProblemCategory, item: ProblemItem, firstClass: string, lastClass: string, invert?: boolean) {
+    switch (cat.items.indexOf(item)) {
+      case 0: return invert ? lastClass : firstClass;
+      case cat.items.length - 1: return invert ? firstClass : lastClass;
+    }
+    return '';
+  }
+  getXBorder(cat: ProblemCategory, item: ProblemItem, invert?: boolean) {
+    return this.getBorderClass(cat, item, 'border-left', 'border-right', invert);
+  }
+  getYBorder(cat: ProblemCategory, item: ProblemItem) {
+    return this.getBorderClass(cat, item, 'border-top', 'border-bottom');
   }
 
   toggleState(mItem: ProblemGridItemVm) {
