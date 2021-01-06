@@ -1,11 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemDef } from '../models/problem-def';
 import { ProblemItem } from '../models/problem-item';
-import { ProblemGridItemVm } from '../problem-grid-item/problem-grid-item-vm';
 import { problemDefToGridVm } from './problem-def-to-grid-vm';
-import { ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
+import { ProblemCategoryVm, ProblemGridVm, ProblemGridElemVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
 @Component({
   selector: 'app-problem-grid',
@@ -26,62 +24,59 @@ export class ProblemGridComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getCatLabelGridRange(cats: ProblemCategory[], cat: ProblemCategory) {
-    const itemsPrior = this.getPriorCatsCount(cats, cat);
+  getCatLabelGridRange(cat: ProblemCategoryVm) {
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
-    return `${3 + itemsPrior} / span ${cat.items.length}`;
+    return `${3 + cat.itemOffset} / span ${cat.items.length}`;
   }
 
-  getMatrixItemClass(matrix: ProblemGridVmCategoryMatrix, item: ProblemGridItemVm) {
-    const cssClass: string[] = [ item.state ];
-    const yBorder = this.getYBorder(matrix.catY, item.itemY);
-    const xBorder = this.getXBorder(matrix.catX, item.itemX);
-    if (xBorder) {
-      cssClass.push(xBorder);
-    }
-    if (yBorder) {
-      cssClass.push(yBorder);
-    }
-    return cssClass;
+  getMatrixElemClass(matrix: ProblemGridVmCategoryMatrix, elem: ProblemGridElemVm) {
+    return [ elem.state, ...this.getBorderX(matrix.catX, elem.itemX), ...this.getBorderY(matrix.catY, elem.itemY) ];
   }
-  getItemGridIndex(cats: ProblemCategory[], cat: ProblemCategory, item: ProblemItem) {
-    const itemsPrior = this.getPriorCatsCount(cats, cat);
+  getItemGridIndex(cat: ProblemCategoryVm, item: ProblemItem) {
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
-    return `${3 + itemsPrior + cat.items.indexOf(item)} / span 1`;
+    return `${3 + cat.itemOffset + cat.items.indexOf(item)} / span 1`;
   }
-  getBorderClass(cat: ProblemCategory, item: ProblemItem, firstClass: string, lastClass: string, invert?: boolean) {
-    switch (cat.items.indexOf(item)) {
-      case 0: return invert ? lastClass : firstClass;
-      case cat.items.length - 1: return invert ? firstClass : lastClass;
+  /** Gets border classes for a category or an item in a category. */
+  getBorderClass(cat: ProblemCategoryVm, item: ProblemItem | undefined, firstClass: string, lastClass: string, invert?: boolean) {
+    const cssClasses: string[] = [];
+    if (invert) {
+      const temp = lastClass;
+      lastClass = firstClass;
+      firstClass = temp;
     }
-    return '';
+    if (item) {
+      // item mode.
+      const itemIndex = cat.items.indexOf(item);
+      if (itemIndex === 0 && cat.isFirst) { cssClasses.push(firstClass); }
+      if (itemIndex === cat.items.length - 1) { cssClasses.push(lastClass); }
+    }
+    else {
+      // category always gets the closing border, and only the first gets the opening border.
+      if (cat.isFirst) { cssClasses.push(firstClass, lastClass); }
+      else { cssClasses.push(lastClass); }
+    }
+
+    return cssClasses;
   }
-  getXBorder(cat: ProblemCategory, item: ProblemItem, invert?: boolean) {
+  getBorderX(cat: ProblemCategoryVm, item?: ProblemItem, invert?: boolean) {
     return this.getBorderClass(cat, item, 'border-left', 'border-right', invert);
   }
-  getYBorder(cat: ProblemCategory, item: ProblemItem) {
-    return this.getBorderClass(cat, item, 'border-top', 'border-bottom');
+  getBorderY(cat: ProblemCategoryVm, item?: ProblemItem, invert?: boolean) {
+    return this.getBorderClass(cat, item, 'border-top', 'border-bottom', invert);
   }
-
-  toggleState(mItem: ProblemGridItemVm) {
-    switch (mItem.state) {
+  /** This is temporarilary updating the vm.  It should update a state. */
+  toggleState(elem: ProblemGridElemVm) {
+    switch (elem.state) {
       case 'accept':
-        mItem.state = 'open';
+        elem.state = 'open';
         break;
       case 'reject':
-        mItem.state = 'accept';
+        elem.state = 'accept';
         break;
       case 'open':
-        mItem.state = 'reject';
+        elem.state = 'reject';
         break;
     }
   }
 
-  private getPriorCatsCount(cats: ProblemCategory[] | undefined, cat: ProblemCategory) {
-    const catIndex = cats?.indexOf(cat) ?? -1;
-    return (cats || [])
-      .slice(0, catIndex)
-      .map(x => x.items.length)
-      .reduce((prev, cur) => prev + cur, 0);
-  }
 }

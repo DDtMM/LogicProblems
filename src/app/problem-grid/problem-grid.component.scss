@@ -1,5 +1,3 @@
-$border-width: 5px;
-
 div {
   box-sizing: border-box;
 }
@@ -10,17 +8,20 @@ div {
   grid-auto-columns: 1fr;
   grid-auto-rows: 1fr;
   font-size: 10pt;
+  grid-gap: 1px;
   width: 100%;
   height: 100%;
+  >div {
+    // simulate border with box-shadow.
+    box-shadow: 0 0 0 1px #000;
+  }
 }
-
 .cat-label {
   background: #ff0000;
   color: white;
   text-align: center;
 }
 .item-label {
-  border: 1px solid black;
   background: #880000;
   color: white;
 }
@@ -33,28 +34,27 @@ div {
   width: 100%;
   padding: 0 3%;
 }
-// vert-labels need two inner divs due to the rotation.
+// vert-labels need two inner divs due to the rotation and need to set in the middle.
 .vert-label {
   overflow-y: hidden;
   transform: rotate(180deg);
   position: relative;
-
   >div {
     writing-mode: vertical-rl;
     height: 100%;
     width: 100%;
-    white-space: nowrap;
+    // the following 3 flex-blox style assure that the inner div is vertically aligned in the middle.
     display: flex;
     flex-direction: column;
     justify-content: center;
     > div {
+      white-space: nowrap;
       padding: 3% 0;
     }
   }
 }
 
-.item {
-  border: 1px solid black;
+.elem {
   background: coral;
   &.reject {
     background: #555;
@@ -64,10 +64,11 @@ div {
   }
 }
 
-$border: 4px solid black;
+$border: 2px solid black;
 .border-top { border-top: $border; }
 .border-left { border-left: $border; }
 .border-bottom { border-bottom: $border; }
 .border-right { border-right: $border; }
 .border-x { border-left: $border; border-right: $border; }
 .border-y { border-top: $border; border-bottom: $border; }
+

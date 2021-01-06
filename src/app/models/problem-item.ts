@@ -1,6 +1,6 @@
-import { IdType } from "./id-type";
+import { IdType } from './id-type';
 
 export interface ProblemItem {
   label: string;
-  solutionGroupId: IdType
+  solutionGroupId: IdType;
 }

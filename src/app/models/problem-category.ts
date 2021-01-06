@@ -1,4 +1,4 @@
-import { ProblemItem } from "./problem-item";
+import { ProblemItem } from './problem-item';
 
 export interface ProblemCategory {
   items: ProblemItem[];
