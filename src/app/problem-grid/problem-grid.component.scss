@@ -7,7 +7,7 @@ div {
   grid-template-rows: 1fr 5fr;
   grid-auto-columns: 1fr;
   grid-auto-rows: 1fr;
-  font-size: 10pt;
+  font-size: 16pt;
   grid-gap: 1px;
   width: 100%;
   height: 100%;
@@ -27,12 +27,14 @@ div {
 }
 // horiz-labels need one inner div so the text can be set in the middle.
 .horiz-label {
+  overflow:hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
   width: 100%;
   padding: 0 3%;
+  white-space: nowrap;
 }
 // vert-labels need two inner divs due to the rotation and need to set in the middle.
 .vert-label {

@@ -1,0 +1,46 @@
+@media (min-aspect-ratio: 5/8) {
+  .container {
+    background: orange; /* blue */
+  }
+}
+@media (min-aspect-ratio: 7/8) {
+  .container {
+    background: #9af; /* blue */
+  }
+}
+@media (min-aspect-ratio: 8/7) {
+  .container {
+    background: green; /* blue */
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    >div {
+      width: 50%;
+      &:first-child {
+        background: purple;
+        > div {
+          position: relative;
+          width: 100%;
+          padding-top: 100%;
+          app-problem-grid {
+            position:  absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            display: block;
+          }
+        }
+      }
+      &:nth-child(2) {
+        background: olive;
+      }
+    }
+  }
+}
+@media (min-aspect-ratio: 8/5) {
+  .container {
+    background: red; /* blue */
+  }
+}

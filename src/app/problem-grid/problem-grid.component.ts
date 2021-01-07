@@ -1,17 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ProblemCategory } from '../models/problem-category';
+import { Component, Input } from '@angular/core';
 import { ProblemDef } from '../models/problem-def';
 import { ProblemItem } from '../models/problem-item';
 import { problemDefToGridVm } from './problem-def-to-grid-vm';
-import { ProblemCategoryVm, ProblemGridVm, ProblemGridElemVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
+import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
 @Component({
   selector: 'app-problem-grid',
   templateUrl: './problem-grid.component.html',
   styleUrls: ['./problem-grid.component.scss']
 })
-export class ProblemGridComponent implements OnInit {
-
+export class ProblemGridComponent {
   gridVm?: ProblemGridVm;
 
   @Input()
@@ -20,9 +18,6 @@ export class ProblemGridComponent implements OnInit {
   }
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   getCatLabelGridRange(cat: ProblemCategoryVm) {
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
