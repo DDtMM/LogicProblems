@@ -6,12 +6,13 @@ import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCateg
 
 @Component({
   selector: 'app-problem-grid',
-  templateUrl: './problem-grid.component.html',
+  templateUrl: './problem-grid.component.svg',
   styleUrls: ['./problem-grid.component.scss']
 })
 export class ProblemGridComponent {
   gridVm?: ProblemGridVm;
-
+  baseUnit = 16;
+  itemLabelMultiplier = 5;
   @Input()
   set problem(value: ProblemDef | undefined) {
     this.gridVm = value ? problemDefToGridVm(value) : undefined;
@@ -19,18 +20,33 @@ export class ProblemGridComponent {
 
   constructor() { }
 
+  getViewbox() {
+    const vbLength = (this.itemLabelMultiplier + 1 + this.getGridLength()) * this.baseUnit;
+    return `0 0 ${vbLength} ${vbLength}`;
+  }
+  getTranslate(xUnit: number, yUnit: number) {
+    return `translate(${xUnit * this.baseUnit}, ${yUnit * this.baseUnit})`;
+  }
+
+  getHorizLabelTransform(lengthUnit: number) {
+    return `rotate(-90) translate(${lengthUnit * this.baseUnit * -1}, 0)`;
+  }
+  getGridLength() {
+    return (this.gridVm?.xCats || []).reduce((prev, cur) => prev + cur.items.length, 0);
+  }
   getCatLabelGridRange(cat: ProblemCategoryVm) {
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
-    return `${3 + cat.itemOffset} / span ${cat.items.length}`;
+    return { index: 3 + cat.itemOffset, length: cat.items.length };
   }
 
   getMatrixElemClass(matrix: ProblemGridVmCategoryMatrix, elem: ProblemGridElemVm) {
-    return [ elem.state, ...this.getBorderX(matrix.catX, elem.itemX), ...this.getBorderY(matrix.catY, elem.itemY) ];
+    return [elem.state, ...this.getBorderX(matrix.catX, elem.itemX), ...this.getBorderY(matrix.catY, elem.itemY)];
   }
   getItemGridIndex(cat: ProblemCategoryVm, item: ProblemItem) {
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
-    return `${3 + cat.itemOffset + cat.items.indexOf(item)} / span 1`;
+    return { index: 3 + cat.itemOffset + cat.items.indexOf(item), length: 1 };
   }
+
   /** Gets border classes for a category or an item in a category. */
   getBorderClass(cat: ProblemCategoryVm, item: ProblemItem | undefined, firstClass: string, lastClass: string, invert?: boolean) {
     const cssClasses: string[] = [];
@@ -72,6 +88,7 @@ export class ProblemGridComponent {
         elem.state = 'reject';
         break;
     }
+    console.log(`new state: ${elem.state}`);
   }
 
 }

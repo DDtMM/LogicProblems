@@ -1,68 +1,13 @@
-div {
-  box-sizing: border-box;
-}
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-  grid-template-rows: 1fr 5fr;
-  grid-auto-columns: 1fr;
-  grid-auto-rows: 1fr;
-  font-size: 16pt;
-  grid-gap: 1px;
-  width: 100%;
-  height: 100%;
-  >div {
-    // simulate border with box-shadow.
-    box-shadow: 0 0 0 1px #000;
-  }
-}
-.cat-label {
-  background: #ff0000;
-  color: white;
-  text-align: center;
-}
-.item-label {
-  background: #880000;
-  color: white;
-}
-// horiz-labels need one inner div so the text can be set in the middle.
-.horiz-label {
-  overflow:hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  padding: 0 3%;
-  white-space: nowrap;
-}
-// vert-labels need two inner divs due to the rotation and need to set in the middle.
-.vert-label {
-  overflow-y: hidden;
-  transform: rotate(180deg);
-  position: relative;
-  >div {
-    writing-mode: vertical-rl;
-    height: 100%;
-    width: 100%;
-    // the following 3 flex-blox style assure that the inner div is vertically aligned in the middle.
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    > div {
-      white-space: nowrap;
-      padding: 3% 0;
-    }
-  }
-}
 
-.elem {
-  background: coral;
-  &.reject {
-    background: #555;
+.grid-cell {
+  > rect {
+    fill:rgb(255,255,255);
+    stroke-width: 1;
+    stroke:rgb(0,0,0);
   }
-  &.accept {
-    background: #0e0;
+  > text {
+    font: 8px verdana;
+    fill:blue;
   }
 }
 
