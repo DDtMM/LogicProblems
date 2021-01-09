@@ -1,17 +1,37 @@
-@media (min-aspect-ratio: 5/8) {
-  .container {
-    background: orange; /* blue */
+.problem-grid-container {
+  // hack to assure square appearance.
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  app-problem-grid {
+    position:  absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
   }
 }
-@media (min-aspect-ratio: 7/8) {
-  .container {
-    background: #9af; /* blue */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  max-height: 100%;
+  >div {
+    &:first-child {
+      flex: 0 1 50%;
+      background: purple;
+    }
+    &:nth-child(2) {
+      flex: 1 0 50%;
+      min-height: 40%;
+      background: yellow;
+    }
   }
 }
+
 @media (min-aspect-ratio: 8/7) {
-  .container {
-    background: green; /* blue */
-  }
+
   .container {
     display: flex;
     flex-direction: row;
@@ -19,28 +39,10 @@
       width: 50%;
       &:first-child {
         background: purple;
-        > div {
-          position: relative;
-          width: 100%;
-          padding-top: 100%;
-          app-problem-grid {
-            position:  absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            display: block;
-          }
-        }
       }
       &:nth-child(2) {
         background: olive;
       }
     }
-  }
-}
-@media (min-aspect-ratio: 8/5) {
-  .container {
-    background: red; /* blue */
   }
 }
