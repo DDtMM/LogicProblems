@@ -4,39 +4,37 @@ app-problem-grid {
     align-items: center;
     justify-content: center;
     height: 100%;
-
 }
-.container {
+.grid-container {
   display: flex;
   flex-direction: column;
-  position: relative;
-  min-height: 100%;
-  max-height: 100vh;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   >div {
     &:first-child {
-      flex: 0 1 50%;
-      background: purple;
+      max-height: 60%;
+      background: #eee;
     }
     &:nth-child(2) {
-      flex: 1 1 50%;
-      background: yellow;
-      overflow-y:auto;
+      background: #ddd;
     }
   }
 }
 
 @media (min-aspect-ratio: 8/9) {
-  .container {
-    display: flex;
+  .grid-container {
     flex-direction: row;
     >div {
       height: 100%;
       &:first-child {
-        background: pink;
+        max-height: 100%;
+        background: #eee;
       }
       &:nth-child(2) {
-        background: blue;
+        background: #ddd;
       }
     }
   }
@@ -44,16 +42,13 @@ app-problem-grid {
 
 @media (min-aspect-ratio: 2/1) {
   .container {
-    display: flex;
     flex-direction: row;
     >div {
       &:first-child {
-        flex: 0 1 auto;
-        background: green;
+        background: #ccc;
       }
       &:nth-child(2) {
-        flex: 1 0 auto;
-        background: red;
+        background: #eee;
       }
     }
   }
