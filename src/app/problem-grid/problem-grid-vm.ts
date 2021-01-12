@@ -13,6 +13,8 @@ export interface ProblemGridElemVm {
 }
 
 export interface ProblemCategoryVm extends ProblemCategory {
+  /** The index in which this category appears. */
+  index: number;
   /** Is the first item in its parent collection. */
   isFirst: boolean;
   /** Is the last item in its parent collection. */

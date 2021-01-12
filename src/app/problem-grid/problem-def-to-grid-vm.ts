@@ -31,7 +31,7 @@ export function problemDefToGridVm(def: ProblemDef): ProblemGridVm {
 function categoryToVm(cat: ProblemCategory, _: number, cats: ProblemCategory[]): ProblemCategoryVm {
   const catIndex = cats.indexOf(cat);
   const itemOffset = cats.slice(0, catIndex).reduce((prev, cur) => prev + cur.items.length, 0);
-  return { ...cat, isFirst: catIndex === 0, isLast: catIndex === cats.length - 1, itemOffset };
+  return { ...cat, index: catIndex, isFirst: catIndex === 0, isLast: catIndex === cats.length - 1, itemOffset };
 }
 function createCategoryMatrix(catX: ProblemCategoryVm, catY: ProblemCategoryVm): ProblemGridVmCategoryMatrix {
   return {

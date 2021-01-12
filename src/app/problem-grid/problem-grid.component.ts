@@ -1,18 +1,22 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProblemDef } from '../models/problem-def';
 import { ProblemItem } from '../models/problem-item';
 import { problemDefToGridVm } from './problem-def-to-grid-vm';
 import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-problem-grid',
   templateUrl: './problem-grid.component.svg',
   styleUrls: ['./problem-grid.component.scss']
 })
 export class ProblemGridComponent {
-  gridVm?: ProblemGridVm;
+  /** How big is each grid square vs a viewBox unit. */
   baseUnit = 16;
+  gridVm?: ProblemGridVm;
+  /** How much longer is an item label vs a grid square. */
   itemLabelMultiplier = 5;
+
   @Input()
   set problem(value: ProblemDef | undefined) {
     this.gridVm = value ? problemDefToGridVm(value) : undefined;
@@ -20,17 +24,19 @@ export class ProblemGridComponent {
 
   constructor() { }
 
+
   getViewbox() {
-    const vbLength = (this.itemLabelMultiplier + 1 + this.getGridLength()) * this.baseUnit;
+    // 1 unit for the category label, plus X units for the item label, plus Y units for the items,
+    // plus Z viewbox units so the grid border isn't cutoff.
+    const vbLength = (this.itemLabelMultiplier + 1 + this.getGridLength()) * this.baseUnit + 1;
     return `0 0 ${vbLength} ${vbLength}`;
   }
-  getTranslate(xUnit: number, yUnit: number) {
-    return `translate(${xUnit * this.baseUnit}, ${yUnit * this.baseUnit})`;
+
+  /** Creates a 2d transform by converting units.  */
+  getTransformTranslate(xUnits: number, yUnits: number) {
+    return `translate(${xUnits * this.baseUnit}, ${yUnits * this.baseUnit})`;
   }
 
-  getHorizLabelTransform(lengthUnit: number) {
-    return `rotate(-90) translate(${lengthUnit * this.baseUnit * -1}, 0)`;
-  }
   getGridLength() {
     return (this.gridVm?.xCats || []).reduce((prev, cur) => prev + cur.items.length, 0);
   }
@@ -39,41 +45,16 @@ export class ProblemGridComponent {
     return { index: 3 + cat.itemOffset, length: cat.items.length };
   }
 
-  getMatrixElemClass(matrix: ProblemGridVmCategoryMatrix, elem: ProblemGridElemVm) {
-    return [elem.state, ...this.getBorderX(matrix.catX, elem.itemX), ...this.getBorderY(matrix.catY, elem.itemY)];
-  }
   getItemGridIndex(cat: ProblemCategoryVm, item: ProblemItem) {
     // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
     return { index: 3 + cat.itemOffset + cat.items.indexOf(item), length: 1 };
   }
 
-  /** Gets border classes for a category or an item in a category. */
-  getBorderClass(cat: ProblemCategoryVm, item: ProblemItem | undefined, firstClass: string, lastClass: string, invert?: boolean) {
-    const cssClasses: string[] = [];
-    if (invert) {
-      const temp = lastClass;
-      lastClass = firstClass;
-      firstClass = temp;
-    }
-    if (item) {
-      // item mode.
-      const itemIndex = cat.items.indexOf(item);
-      if (itemIndex === 0 && cat.isFirst) { cssClasses.push(firstClass); }
-      if (itemIndex === cat.items.length - 1) { cssClasses.push(lastClass); }
-    }
-    else {
-      // category always gets the closing border, and only the first gets the opening border.
-      if (cat.isFirst) { cssClasses.push(firstClass, lastClass); }
-      else { cssClasses.push(lastClass); }
-    }
-
-    return cssClasses;
-  }
-  getBorderX(cat: ProblemCategoryVm, item?: ProblemItem, invert?: boolean) {
-    return this.getBorderClass(cat, item, 'border-left', 'border-right', invert);
-  }
-  getBorderY(cat: ProblemCategoryVm, item?: ProblemItem, invert?: boolean) {
-    return this.getBorderClass(cat, item, 'border-top', 'border-bottom', invert);
+  getCatColor(catX?: ProblemCategoryVm, catY?: ProblemCategoryVm) {
+    const colorR = catX ? 247 - (catX.index * 16) : 191;
+    const colorB = catY ? 255 - (catY.index * 16) : 191;
+    const color = `rgba(${colorR}, 255, ${colorB}, 1)`;
+    return color;
   }
   /** This is temporarilary updating the vm.  It should update a state. */
   toggleState(elem: ProblemGridElemVm) {
