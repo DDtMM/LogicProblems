@@ -17,11 +17,11 @@ app-problem-grid {
     &:first-child {
       z-index: 2;
       max-height: 60%;
-      background: #eee;
+      background: #eeeeee;
     }
     &:nth-child(2) {
       position: relative;
-      background: #ddd;
+      background: #e8e8e8;
     }
   }
 }
@@ -33,10 +33,9 @@ app-problem-grid {
       height: 100%;
       &:first-child {
         max-height: 100%;
-        background: #eee;
       }
       &:nth-child(2) {
-        background: #ddd;
+        //background: #e8e8e8;
       }
     }
   }

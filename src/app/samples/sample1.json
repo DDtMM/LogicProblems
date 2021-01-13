@@ -1,6 +1,7 @@
 {
   "categories": [
     {
+      "categoryId": "people",
       "items": [
         { "label": "Andre", "solutionGroupId": 1 },
         { "label": "Danny", "solutionGroupId": 2 },
@@ -11,6 +12,7 @@
       "label": "People"
     },
     {
+      "categoryId": "cookies",
       "items": [
         { "label": "Chocolate Chip", "solutionGroupId": 2 },
         { "label": "Peanut Butter", "solutionGroupId": 5 },
@@ -21,6 +23,7 @@
       "label": "Cookies"
     },
     {
+      "categoryId": "drinks",
       "items": [
         { "label": "Chocolate Milk", "solutionGroupId": 3 },
         { "label": "Milk", "solutionGroupId": 1 },
@@ -31,6 +34,7 @@
       "label": "Drink"
     },
     {
+      "categoryId": "time",
       "items": [
         { "label": "Dawn", "solutionGroupId": 3 },
         { "label": "Lunchtime", "solutionGroupId": 1 },

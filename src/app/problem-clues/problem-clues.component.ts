@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ProblemClue } from '../models/problem-clue';
 
 @Component({
@@ -6,13 +6,7 @@ import { ProblemClue } from '../models/problem-clue';
   templateUrl: './problem-clues.component.html',
   styleUrls: ['./problem-clues.component.scss']
 })
-export class ProblemCluesComponent implements OnInit {
+export class ProblemCluesComponent {
   @Input()
   clues?: ProblemClue[];
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

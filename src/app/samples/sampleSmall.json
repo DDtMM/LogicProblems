@@ -1,0 +1,36 @@
+{
+  "categories": [
+    {
+      "categoryId": "people",
+      "items": [
+        { "label": "Andre", "solutionGroupId": 1 },
+        { "label": "Danny", "solutionGroupId": 2 },
+        { "label": "Amelia Bedilia Superila", "solutionGroupId": 3 }
+      ],
+      "label": "People"
+    },
+    {
+      "categoryId": "cookies",
+      "items": [
+        { "label": "Chocolate Chip", "solutionGroupId": 2 },
+        { "label": "Double Chocalate chip yum yum coopie copppie", "solutionGroupId": 3 },
+        { "label": "Sugar", "solutionGroupId": 1 }
+      ],
+      "label": "Cookies"
+    },
+    {
+      "categoryId": "drinks",
+      "items": [
+        { "label": "Chocolate Milk", "solutionGroupId": 3 },
+        { "label": "Milk", "solutionGroupId": 1 },
+        { "label": "Coke", "solutionGroupId": 2 }
+      ],
+      "label": "Drink"
+    }
+  ],
+  "clues": [
+    { "content": "This is a clue" },
+    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
+    { "content": "This is a clue" }
+  ]
+}

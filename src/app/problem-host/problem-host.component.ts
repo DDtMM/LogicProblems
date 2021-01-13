@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ProblemDef } from '../models/problem-def';
-import data from '../samples/sample1.json';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { GameStateService } from '../game-state.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,14 +7,9 @@ import data from '../samples/sample1.json';
   templateUrl: './problem-host.component.html',
   styleUrls: ['./problem-host.component.scss']
 })
-export class ProblemHostComponent implements OnInit {
+export class ProblemHostComponent {
 
-  problem: ProblemDef = data;
+  readonly gameState$ = this.gameStateSvc.gameState$;
 
-  constructor() { }
-
-  ngOnInit(): void {
-    console.log(this.problem);
-  }
-
+  constructor(private gameStateSvc: GameStateService) { }
 }

@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { GameState } from '../models/game-state';
 import { ProblemDef } from '../models/problem-def';
 import { ProblemItem } from '../models/problem-item';
-import { problemDefToGridVm } from './problem-def-to-grid-vm';
-import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
+import { gameStateToGridVm } from './game-state-to-grid-vm';
+import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix, ProblemItemVm } from './problem-grid-vm';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,12 +19,11 @@ export class ProblemGridComponent {
   itemLabelMultiplier = 5;
 
   @Input()
-  set problem(value: ProblemDef | undefined) {
-    this.gridVm = value ? problemDefToGridVm(value) : undefined;
+  set gameState(value: GameState | undefined) {
+    this.gridVm = value ? gameStateToGridVm(value, this.baseUnit, this.itemLabelMultiplier) : undefined;
   }
 
   constructor() { }
-
 
   getViewbox() {
     // 1 unit for the category label, plus X units for the item label, plus Y units for the items,
@@ -32,30 +32,10 @@ export class ProblemGridComponent {
     return `0 0 ${vbLength} ${vbLength}`;
   }
 
-  /** Creates a 2d transform by converting units.  */
-  getTransformTranslate(xUnits: number, yUnits: number) {
-    return `translate(${xUnits * this.baseUnit}, ${yUnits * this.baseUnit})`;
-  }
-
   getGridLength() {
     return (this.gridVm?.xCats || []).reduce((prev, cur) => prev + cur.items.length, 0);
   }
-  getCatLabelGridRange(cat: ProblemCategoryVm) {
-    // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
-    return { index: 3 + cat.itemOffset, length: cat.items.length };
-  }
 
-  getItemGridIndex(cat: ProblemCategoryVm, item: ProblemItem) {
-    // offset start index by 3 since cols are 1 indexed and there should be 2 in dimension previous.
-    return { index: 3 + cat.itemOffset + cat.items.indexOf(item), length: 1 };
-  }
-
-  getCatColor(catX?: ProblemCategoryVm, catY?: ProblemCategoryVm) {
-    const colorR = catX ? 247 - (catX.index * 16) : 191;
-    const colorB = catY ? 255 - (catY.index * 16) : 191;
-    const color = `rgba(${colorR}, 255, ${colorB}, 1)`;
-    return color;
-  }
   /** This is temporarilary updating the vm.  It should update a state. */
   toggleState(elem: ProblemGridElemVm) {
     switch (elem.state) {
@@ -69,7 +49,6 @@ export class ProblemGridComponent {
         elem.state = 'reject';
         break;
     }
-    console.log(`new state: ${elem.state}`);
   }
 
 }

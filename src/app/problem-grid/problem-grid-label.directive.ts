@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Directive, ElementRef, Host, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Rect } from './problem-grid-vm';
 import { ProblemGridComponent } from './problem-grid.component';
 
 @Directive({
@@ -14,6 +15,9 @@ export class ProblemGridLabelDirective implements OnChanges {
   @HostBinding('attr.transform')
   attrTransform?: string;
 
+  @HostBinding('attr.transform-origin')
+  attrTransformOrigin?: string;
+
   @HostBinding('attr.x')
   attrX = 0;
 
@@ -22,11 +26,11 @@ export class ProblemGridLabelDirective implements OnChanges {
 
   /** How many grid units long is the label. */
   @Input()
-  length?: number;
+  rect?: Rect;
 
   /** padding in grid units */
   @Input()
-  padding = .1;
+  padding = .2;
 
   @Input()
   orientation?: 'horiz' | 'vert';
@@ -42,16 +46,8 @@ export class ProblemGridLabelDirective implements OnChanges {
     this.update();
   }
 
-  private calcLength() {
-    return (this.length || this.grid.itemLabelMultiplier) * this.grid.baseUnit;
-  }
-
   private calcPadding() {
     return this.padding * this.grid.baseUnit;
-  }
-
-  private getTransformForVerts() {
-    return `rotate(-90) translate(${this.calcLength() * -1}, 0)`;
   }
 
   /** Gets a scale transform if the passed element exceeds width or height. */
@@ -62,46 +58,50 @@ export class ProblemGridLabelDirective implements OnChanges {
     const scaleY = maxHeightPx / bb.height;
     const scale = Math.min(scaleX, scaleY);
     if (scale < 1) {
-      const translateX = (1 - scale) * this.attrX;
-      const translateY = (1 - scale) * this.attrY;
+      const translateX = (1 - scale) * (this.attrX - (this.rect?.x || 0));
+      const translateY = (1 - scale) * (this.attrY - (this.rect?.y || 0));
       return `matrix(${scale}, 0, 0, ${scale}, ${translateX}, ${translateY})`;
     }
     return undefined;
   }
 
   private update() {
+    if (!this.rect) {
+      return;
+    }
+    const { x, y } = { ...this.rect };
+    const height = this.orientation === 'vert' ? (this.rect?.width || 0) : (this.rect?.height || 0);
+    const width = this.orientation === 'vert' ? (this.rect?.height || 0) : (this.rect?.width || 0);
+    const padding = this.calcPadding();
 
     switch (this.textAlign) {
       case 'center':
         this.attrTextAnchor = 'middle';
-        this.attrX = this.calcLength() / 2;
+        this.attrX = x + width / 2;
         break;
       case 'right':
         this.attrTextAnchor = 'end';
-        this.attrX = this.calcLength() - this.calcPadding();
+        this.attrX = x + width - padding;
         break;
       default:
         this.attrTextAnchor = 'start';
-        this.attrX = this.calcPadding();
+        this.attrX = x + padding;
     }
-    this.attrY = this.grid.baseUnit / 2;
-
+    this.attrY = y + (height) / 2;
+    this.attrTransformOrigin = `${x} ${y}`;
+    const transforms: string[] = [];
+    if (this.orientation === 'vert') {
+      transforms.push(`rotate(-90) translate(${width * -1}, 0)`);
+    }
     setTimeout(() => {
       // the text object needs to be drawn first before we can get the bounding box to calculate how much to scale the text.
-
-      const transforms: string[] = [];
-      const scaleTransform = this.getTransformScale(this.calcLength() - this.calcPadding() * 2, this.grid.baseUnit);
+      const scaleTransform = this.getTransformScale(width - padding * 2, height);
       if (scaleTransform) {
         transforms.push(scaleTransform);
       }
-      if (this.orientation === 'vert') {
-        transforms.push(this.getTransformForVerts());
-      }
       this.attrTransform = transforms.length ? transforms.join(' ') : undefined;
-
       this.cd.detectChanges();
     }, 0);
-
 
   }
 }

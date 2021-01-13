@@ -1,20 +1,16 @@
+rect {
+  stroke:rgb(127,127,127);
+}
 
 .grid-cell {
   > rect {
     stroke-width: .25;
-    stroke:rgb(63,63,63);
   }
   > text {
-    font: 8px verdana;
-    fill:blue;
+    font: 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    &.cat-label {
+      font-weight: bold;
+    }
+    fill:rgb(0, 96, 96);
   }
 }
-
-$border: 2px solid black;
-.border-top { border-top: $border; }
-.border-left { border-left: $border; }
-.border-bottom { border-bottom: $border; }
-.border-right { border-right: $border; }
-.border-x { border-left: $border; border-right: $border; }
-.border-y { border-top: $border; border-bottom: $border; }
-

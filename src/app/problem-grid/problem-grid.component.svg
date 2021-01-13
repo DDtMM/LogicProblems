@@ -1,6 +1,6 @@
 <svg *ngIf="gridVm" [attr.viewBox]="getViewbox()">
   <defs>
-    <g id="acceptIcon" fill="lightgreen">
+    <g id="acceptIcon" fill="#0d1" stroke-width=".5" stroke="#080">
       <circle [attr.cx]="baseUnit / 2" [attr.cy]="baseUnit / 2" [attr.r]="baseUnit / 3" />
     </g>
     <g id="rejectIcon" stroke="red">
@@ -10,39 +10,49 @@
   </defs>
   <g transform="translate(.5, .5)">
     <ng-container *ngFor="let cat of gridVm!.xCats">
-      <g class="grid-cell" [attr.transform]="getTransformTranslate(1 + itemLabelMultiplier + cat.itemOffset, 0)">
-        <rect [attr.fill]="getCatColor(cat)" [attr.width]="cat.items.length * baseUnit" [attr.height]="baseUnit" />
-        <text appProblemGridLabel textAlign="center" [length]="cat.items.length">{{cat.label}}</text>
+      <g class="grid-cell">
+        <rect appProblemGridRect [catX]="cat" [rect]="cat.labelRect" />
+        <text appProblemGridLabel class="cat-label" textAlign="center" [rect]="cat.labelRect">{{cat.label}}</text>
       </g>
-      <g class="grid-cell" *ngFor="let item of cat.items; let index = index" [attr.transform]="getTransformTranslate(1 + itemLabelMultiplier + cat.itemOffset + index, 1)">
-        <rect [attr.fill]="getCatColor(cat)" [attr.width]="baseUnit" [attr.height]="itemLabelMultiplier * baseUnit" />
-        <text appProblemGridLabel orientation="vert">{{item.label}}</text>
+      <g class="grid-cell" *ngFor="let item of cat.items; let index = index">
+        <rect appProblemGridRect [catX]="cat" [rect]="item.labelRect" />
+        <text appProblemGridLabel orientation="vert" [rect]="item.labelRect">{{item.label}}</text>
       </g>
     </ng-container>
     <ng-container *ngFor="let cat of gridVm!.yCats">
-      <g class="grid-cell" [attr.transform]=" getTransformTranslate(0, 1 + itemLabelMultiplier + cat.itemOffset)">
-        <rect [attr.fill]="getCatColor(undefined, cat)" [attr.width]="baseUnit" [attr.height]="cat.items.length * baseUnit" />
-        <text appProblemGridLabel textAlign="center" orientation="vert" [length]="cat.items.length">{{cat.label}}</text>
+      <g class="grid-cell">
+        <rect appProblemGridRect [catY]="cat" [rect]="cat.labelRect" />
+        <text appProblemGridLabel class="cat-label" textAlign="center" orientation="vert" [rect]="cat.labelRect">
+          {{cat.label}}
+        </text>
       </g>
-      <g class="grid-cell" *ngFor="let item of cat.items; let index = index" [attr.transform]="getTransformTranslate(1, 1 + itemLabelMultiplier + cat.itemOffset + index)">
-        <rect  [attr.fill]="getCatColor(undefined, cat)" [attr.width]="itemLabelMultiplier * baseUnit" [attr.height]="baseUnit" />
-        <text appProblemGridLabel textAlign="right">{{item.label}}</text>
+      <g class="grid-cell" *ngFor="let item of cat.items; let index = index">
+        <rect appProblemGridRect [catY]="cat" [rect]="item.labelRect" />
+        <text appProblemGridLabel textAlign="right" [rect]="item.labelRect">{{item.label}}</text>
       </g>
     </ng-container>
     <ng-container *ngFor="let matricesRow of gridVm!.matrices">
       <ng-container *ngFor="let catMatrix of matricesRow">
         <ng-container *ngFor="let matrixRow of catMatrix.elems; let yIndex = index">
-          <g class="grid-cell" *ngFor="let mElem of matrixRow; let xIndex = index" (click)="toggleState(mElem)" [attr.transform]="getTransformTranslate(
-            (1 + itemLabelMultiplier + catMatrix.catX.itemOffset + xIndex),
-            (1 + itemLabelMultiplier + catMatrix.catY.itemOffset + yIndex))">
-
-            <rect [attr.fill]="getCatColor(catMatrix.catX, catMatrix.catY)"
-              [attr.width]="baseUnit" [attr.height]="baseUnit" />
-            <use href="#rejectIcon" *ngIf="mElem.state === 'reject'" />
-            <use href="#acceptIcon" *ngIf="mElem.state === 'accept'" />
+          <g class="grid-cell" *ngFor="let mElem of matrixRow; let xIndex = index" (click)="toggleState(mElem); $event.stopPropagation();">
+            <rect appProblemGridRect [catX]="catMatrix.catX" [catY]="catMatrix.catY" [rect]="mElem.gridRect"  />
+            <use href="#rejectIcon" *ngIf="mElem.state === 'reject'" appProblemGridRect [rect]="mElem.gridRect"  />
+            <use href="#acceptIcon" *ngIf="mElem.state === 'accept'" appProblemGridRect [rect]="mElem.gridRect"  />
           </g>
         </ng-container>
       </ng-container>
+    </ng-container>
+    <ng-container *ngFor="let cat of gridVm!.xCats">
+      <rect stroke-width=".8" fill="transparent" pointer-events="none"
+        [attr.x]="cat.labelRect.x"
+        [attr.height]="(1 + itemLabelMultiplier + (gridVm.xCats.length - cat.index) * cat.items.length) * baseUnit"
+        [attr.width]="cat.labelRect.width" />
+    </ng-container>
+    <ng-container *ngFor="let cat of gridVm!.yCats">
+      <rect stroke-width=".8" fill="transparent" pointer-events="none"
+        [attr.y]="cat.labelRect.y"
+        [attr.height]="cat.labelRect.height"
+        [attr.width]="(1 + itemLabelMultiplier + (gridVm.yCats.length - cat.index) * cat.items.length) * baseUnit" />
     </ng-container>
   </g>
 </svg>
