@@ -1,3 +1,11 @@
+// this is synced with problem-host flex direction so that it takes up full space on the cross direction.
+svg {
+  width: 100%;
+  @media (min-aspect-ratio: 8/9) {
+    width: unset;
+    height: 100%;
+  }
+}
 rect {
   stroke:rgb(127,127,127);
 }

@@ -4,23 +4,22 @@ import { ProblemCategory } from '../models/problem-category';
 import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
 export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLabelMultiplier: number): ProblemGridVm {
-  const dimCatsCount = gameState.def.categories.length - 1;
   const xCats = gameState.matrices[0].map(m => m.catX).map((cat, _, cats) => categoryToVm(cat, cats, false));
   const yCats = gameState.matrices.map(r => r[0].catY).map((cat, _, cats) => categoryToVm(cat, cats, true));
-  const categoryRows: ProblemGridVmCategoryMatrix[][] = [];
+  const xCatMap = new Map(xCats.map(x => [x.categoryId, x]));
+  const yCatMap = new Map(yCats.map(x => [x.categoryId, x]));
+  const matrices = gameState.matrices.map(x => x.map(({ catX, catY }) =>
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    createCategoryMatrix(xCatMap.get(catX.categoryId)!, yCatMap.get(catY.categoryId)!)));
 
-  for (let yIdx = 0; yIdx < dimCatsCount; yIdx++) {
-    const row: ProblemGridVmCategoryMatrix[] = [];
-    for (let xIdx = 0; xIdx < dimCatsCount - yIdx; xIdx++) {
-      row.push(createCategoryMatrix(xCats[xIdx], yCats[yIdx]));
-    }
-    categoryRows.push(row);
-  }
 
+  const totalLength = (1 + itemLabelMultiplier + xCats.reduce((prev, cur) => prev + cur.items.length, 0)) * baseUnit + 1;
   return {
     baseUnit,
     itemLabelMultiplier,
-    matrices: categoryRows,
+    matrices,
+    tracks: [...createTrackRects(xCats, false), ...createTrackRects(yCats, true)],
+    totalLength,
     xCats,
     yCats
   };
@@ -66,6 +65,18 @@ export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLa
         }))
       )
     };
+  }
+
+  /** Creates a rectangle the encompasses the full area of a category. */
+  function createTrackRects(cats: ProblemCategoryVm[], isVert: boolean) {
+    return cats.map(({items, labelRect}, i) => {
+      const length = (1 + itemLabelMultiplier + items.length * (cats.length - i)) * baseUnit;
+      return {
+        ...labelRect,
+        height: isVert ? labelRect.height : length,
+        width: isVert ? length : labelRect.width
+      };
+    });
   }
 }
 

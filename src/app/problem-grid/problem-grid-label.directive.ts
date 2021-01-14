@@ -70,6 +70,7 @@ export class ProblemGridLabelDirective implements OnChanges {
       return;
     }
     const { x, y } = { ...this.rect };
+    // swap width and height if vertical.  Text element will be setup as though it was horizontal, and then rotated with a transform.
     const height = this.orientation === 'vert' ? (this.rect?.width || 0) : (this.rect?.height || 0);
     const width = this.orientation === 'vert' ? (this.rect?.height || 0) : (this.rect?.width || 0);
     const padding = this.calcPadding();

@@ -1,4 +1,4 @@
-import { ProblemElemState } from '../models/game-state';
+import { ElemStateValue } from '../models/game-state';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemItem } from '../models/problem-item';
 
@@ -20,7 +20,7 @@ export interface ProblemGridElemVm {
   /** The associated category item along the y axis. */
   itemY: ProblemItem;
   /** The current visual state of the element. */
-  state: ProblemElemState;
+  state: ElemStateValue;
 }
 
 export interface ProblemItemVm extends ProblemItem {
@@ -53,8 +53,13 @@ export interface ProblemGridVm {
   itemLabelMultiplier: number;
   /** 2d array of CategoryMatrix. */
   matrices: ProblemGridVmCategoryMatrix[][];
+  /** The total width and height of the grid. */
+  totalLength: number;
+  /** Rectangles that encompass the total area of a category. */
+  tracks: Rect[];
   /** All possible x-axis categories. */
   xCats: ProblemCategoryVm[];
   /** All possible y-axis categories. */
   yCats: ProblemCategoryVm[];
+
 }
