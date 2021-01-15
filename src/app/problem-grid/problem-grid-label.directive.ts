@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Directive, ElementRef, Host, HostBinding, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, HostBinding, Input, OnChanges } from '@angular/core';
+
 import { Rect } from './problem-grid-vm';
 import { ProblemGridComponent } from './problem-grid.component';
 
@@ -94,7 +95,8 @@ export class ProblemGridLabelDirective implements OnChanges {
     if (this.orientation === 'vert') {
       transforms.push(`rotate(-90) translate(${width * -1}, 0)`);
     }
-    setTimeout(() => {
+    this.cd.detectChanges();
+    //setTimeout(() => {
       // the text object needs to be drawn first before we can get the bounding box to calculate how much to scale the text.
       const scaleTransform = this.getTransformScale(width - padding * 2, height);
       if (scaleTransform) {
@@ -102,7 +104,7 @@ export class ProblemGridLabelDirective implements OnChanges {
       }
       this.attrTransform = transforms.length ? transforms.join(' ') : undefined;
       this.cd.detectChanges();
-    }, 0);
+    //}, 0);
 
   }
 }

@@ -1,41 +1,41 @@
-<svg *ngIf="(gridVm$ | async) as gridVm" [attr.viewBox]="'0 0 ' + gridVm.totalLength + ' ' +gridVm.totalLength">
+<svg class="theme-sunset" *ngIf="(gridVm$ | async) as gridVm" [attr.viewBox]="'0 0 ' + gridVm.totalLength + ' ' +gridVm.totalLength">
   <defs>
-    <g id="acceptIcon" fill="#0d1" stroke-width=".5" stroke="#080">
+    <g id="acceptIcon" fill="#0d1" stroke-width="1" stroke="#080">
       <circle [attr.cx]="baseUnit / 2" [attr.cy]="baseUnit / 2" [attr.r]="baseUnit / 3" />
     </g>
-    <g id="rejectIcon" stroke="red">
-      <line x1="2" y1="2" [attr.x2]="baseUnit - 2" [attr.y2]="baseUnit - 2" />
-      <line x1="2" [attr.y1]="baseUnit - 2" [attr.x2]="baseUnit - 2" y2="2" />
+    <g id="rejectIcon" stroke="red" stroke-width="2">
+      <line x1="3" y1="3" [attr.x2]="baseUnit - 3" [attr.y2]="baseUnit - 3" />
+      <line x1="3" [attr.y1]="baseUnit - 3" [attr.x2]="baseUnit - 3" y2="3" />
     </g>
   </defs>
   <g transform="translate(.5, .5)">
     <ng-container *ngFor="let cat of gridVm!.xCats">
       <g class="grid-cell">
-        <rect appProblemGridRect [catX]="cat" [rect]="cat.labelRect" />
+        <rect appProblemGridRect [catX]="cat.index" [rect]="cat.labelRect" />
         <text appProblemGridLabel class="cat-label" textAlign="center" [rect]="cat.labelRect">{{cat.label}}</text>
       </g>
       <g class="grid-cell" *ngFor="let item of cat.items; let index = index">
-        <rect appProblemGridRect [catX]="cat" [rect]="item.labelRect" />
+        <rect appProblemGridRect [catX]="cat.index" [rect]="item.labelRect" />
         <text appProblemGridLabel orientation="vert" [rect]="item.labelRect">{{item.label}}</text>
       </g>
     </ng-container>
     <ng-container *ngFor="let cat of gridVm!.yCats">
       <g class="grid-cell">
-        <rect appProblemGridRect [catY]="cat" [rect]="cat.labelRect" />
+        <rect appProblemGridRect [catY]="cat.index" [rect]="cat.labelRect" />
         <text appProblemGridLabel class="cat-label" textAlign="center" orientation="vert" [rect]="cat.labelRect">
           {{cat.label}}
         </text>
       </g>
       <g class="grid-cell" *ngFor="let item of cat.items; let index = index">
-        <rect appProblemGridRect [catY]="cat" [rect]="item.labelRect" />
+        <rect appProblemGridRect [catY]="cat.index" [rect]="item.labelRect" />
         <text appProblemGridLabel textAlign="right" [rect]="item.labelRect">{{item.label}}</text>
       </g>
     </ng-container>
     <ng-container *ngFor="let matricesRow of gridVm!.matrices">
       <ng-container *ngFor="let catMatrix of matricesRow">
-        <ng-container *ngFor="let matrixRow of catMatrix.elems; let yIndex = index">
-          <g class="grid-cell" *ngFor="let mElem of matrixRow; let xIndex = index" (click)="toggleState(mElem); $event.stopPropagation();">
-            <rect appProblemGridRect [catX]="catMatrix.catX" [catY]="catMatrix.catY" [rect]="mElem.gridRect"  />
+        <ng-container *ngFor="let matrixRow of catMatrix.elems">
+          <g class="grid-cell" *ngFor="let mElem of matrixRow" (click)="toggleState(mElem); $event.stopPropagation();">
+            <rect appProblemGridRect [catX]="catMatrix.catXIdx" [catY]="catMatrix.catYIdx" [rect]="mElem.gridRect"  />
             <use href="#rejectIcon" *ngIf="mElem.state === 'reject'" appProblemGridRect [rect]="mElem.gridRect"  />
             <use href="#acceptIcon" *ngIf="mElem.state === 'accept'" appProblemGridRect [rect]="mElem.gridRect"  />
           </g>

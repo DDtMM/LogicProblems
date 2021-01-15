@@ -1,13 +1,14 @@
+@use "sass:color";
+@import "../shared/variables";
+
 // this is synced with problem-host flex direction so that it takes up full space on the cross direction.
 svg {
   width: 100%;
+  user-select: none;
   @media (min-aspect-ratio: 8/9) {
     width: unset;
     height: 100%;
   }
-}
-rect {
-  stroke:rgb(127,127,127);
 }
 
 .grid-cell {
@@ -19,6 +20,49 @@ rect {
     &.cat-label {
       font-weight: bold;
     }
-    fill:rgb(0, 96, 96);
+    fill: #000;
+  }
+}
+
+@function getGridFillColor($idx, $baseColor, $altColor, $stepAmt) {
+  $color: if($altColor == null or ($idx % 2) == 1, $baseColor, $altColor);
+  @return if($stepAmt == null, $color, color.adjust($color, $lightness: $idx * $stepAmt));
+}
+@each $theme, $themeMap in $themes {
+  $colorX: map-get($themeMap, colorX);
+  $colorY: map-get($themeMap, colorY);
+  $colorXAlt: map-get($themeMap, colorXAlt);
+  $colorYAlt: map-get($themeMap, colorYAlt);
+  $foreColor: map-get($themeMap, foreColor);
+  $stepAmt: map-get($themeMap, gridColorStepAmt);
+
+  .theme-#{$theme} {
+    rect {
+      stroke: $foreColor;
+    }
+    .grid-cell {
+      > text {
+        fill: $foreColor;
+      }
+
+      @for $i from 1 through 5 {
+        $stepColorX: getGridFillColor($i, $colorX, $colorXAlt, $stepAmt);
+        $stepColorY: getGridFillColor($i, $colorY, $colorYAlt, $stepAmt);
+
+        &.cat-x-#{$i}, .cat-x-#{$i} {
+          fill: $stepColorX;
+        }
+        &.cat-y-#{$i}, .cat-y-#{$i} {
+          fill: $stepColorY;
+          // create classes for when y and x intersect.
+          @for $j from 1 through 5 {
+            $innerColorX: getGridFillColor($j, $colorX, $colorXAlt, $stepAmt);
+            &.cat-x-#{$j} {
+              fill: mix($innerColorX, $stepColorY, 50%);
+            }
+          }
+        }
+      }
+    }
   }
 }

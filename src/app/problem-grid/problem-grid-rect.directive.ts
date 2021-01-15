@@ -1,12 +1,13 @@
 import { Directive, HostBinding, Input, OnChanges } from '@angular/core';
-import { ProblemCategoryVm, Rect } from './problem-grid-vm';
+
+import { Rect } from './problem-grid-vm';
 
 @Directive({
   selector: '[appProblemGridRect]'
 })
 export class ProblemGridRectDirective implements OnChanges {
-  @HostBinding('attr.fill')
-  attrFill?: string;
+  @HostBinding('attr.class')
+  attrClass?: string;
 
   @HostBinding('attr.height')
   attrHeight = 0;
@@ -24,14 +25,13 @@ export class ProblemGridRectDirective implements OnChanges {
   @Input()
   rect?: Rect;
 
-  /** Optional x dimension category. */
+  /** Optional x dimension index. */
   @Input()
-  catX?: ProblemCategoryVm;
+  catX?: number;
 
   /** Optional y dimension category. */
   @Input()
-  catY?: ProblemCategoryVm;
-
+  catY?: number;
 
   constructor() {
     this.update();
@@ -41,15 +41,15 @@ export class ProblemGridRectDirective implements OnChanges {
     this.update();
   }
 
-  getCatColor() {
-    const colorX: number = this.catX ? 231 - (this.catX.index * 12) : 255;
-    const colorY: number = this.catY ? 239 - (this.catY.index * 12) : 255;
-    const color = `rgb(255, ${colorX}, ${colorY})`;
-    return color;
-  }
-
   private update() {
-    this.attrFill = this.getCatColor();
+    const classes: string[] = [];
+    if (this.catX != null) {
+      classes.push(`cat-x-${this.catX + 1}`);
+    }
+    if (this.catY != null) {
+      classes.push(`cat-y-${this.catY + 1}`);
+    }
+    this.attrClass = classes.join(' ');
     this.attrHeight = this.rect?.height || 0;
     this.attrWidth = this.rect?.width || 0;
     this.attrX = this.rect?.x || 0;

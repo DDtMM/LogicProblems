@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
+import { GameStateService } from './game-state/game-state.service';
 import data from './samples/sample1.json';
-import { GameStateService } from './game-state.service';
 
 @Component({
   selector: 'app-root',

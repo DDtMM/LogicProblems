@@ -1,4 +1,4 @@
-import { ElemStateValue } from '../models/game-state';
+import { ElemStateValue } from '../game-state/game-state';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemItem } from '../models/problem-item';
 
@@ -13,12 +13,10 @@ export interface Rect extends Point2d {
 }
 
 export interface ProblemGridElemVm {
+  /** The id of the associated game element */
+  elemId: number;
   /** The location and size of the grid item */
   gridRect: Rect;
-  /** The associated category item along the x axis. */
-  itemX: ProblemItem;
-  /** The associated category item along the y axis. */
-  itemY: ProblemItem;
   /** The current visual state of the element. */
   state: ElemStateValue;
 }
@@ -39,9 +37,9 @@ export interface ProblemCategoryVm extends ProblemCategory {
 
 export interface ProblemGridVmCategoryMatrix {
   /** The category along the x axis represented by this matrix. */
-  catX: ProblemCategoryVm;
+  catXIdx: number;
   /** The category along the y axis represented by this matrix. */
-  catY: ProblemCategoryVm;
+  catYIdx: number;
   /** All elements. */
   elems: ProblemGridElemVm[][];
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GameStateService } from '../game-state.service';
+import { GameStateService } from '../game-state/game-state.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

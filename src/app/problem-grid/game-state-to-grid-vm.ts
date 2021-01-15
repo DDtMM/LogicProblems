@@ -1,25 +1,21 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { GameState } from '../models/game-state';
+import { ElemState, GameState } from '../game-state/game-state';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
 export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLabelMultiplier: number): ProblemGridVm {
   const xCats = gameState.matrices[0].map(m => m.catX).map((cat, _, cats) => categoryToVm(cat, cats, false));
   const yCats = gameState.matrices.map(r => r[0].catY).map((cat, _, cats) => categoryToVm(cat, cats, true));
-  const xCatMap = new Map(xCats.map(x => [x.categoryId, x]));
-  const yCatMap = new Map(yCats.map(x => [x.categoryId, x]));
-  const matrices = gameState.matrices.map(x => x.map(({ catX, catY }) =>
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    createCategoryMatrix(xCatMap.get(catX.categoryId)!, yCatMap.get(catY.categoryId)!)));
-
-
+  const matrices = gameState.matrices.map((x, catYIdx) => x.map(({ elems }, catXIdx) =>
+    createCategoryMatrix(catXIdx, catYIdx, elems)));
   const totalLength = (1 + itemLabelMultiplier + xCats.reduce((prev, cur) => prev + cur.items.length, 0)) * baseUnit + 1;
+  const tracks = [...createTrackRects(xCats, false), ...createTrackRects(yCats, true)];
   return {
     baseUnit,
     itemLabelMultiplier,
     matrices,
-    tracks: [...createTrackRects(xCats, false), ...createTrackRects(yCats, true)],
     totalLength,
+    tracks,
     xCats,
     yCats
   };
@@ -47,23 +43,20 @@ export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLa
     };
   }
 
-  function createCategoryMatrix(catX: ProblemCategoryVm, catY: ProblemCategoryVm): ProblemGridVmCategoryMatrix {
+  function createCategoryMatrix(catXIdx: number, catYIdx: number, elems: ElemState[][]): ProblemGridVmCategoryMatrix {
     return {
-      catX,
-      catY,
-      elems: catY.items.map((itemY, idxY) =>
-        catX.items.map<ProblemGridElemVm>((itemX, idxX) => ({
-          gridRect: {
-            height: baseUnit,
-            width: baseUnit,
-            x: (1 + itemLabelMultiplier + catX.itemOffset + idxX) * baseUnit,
-            y: (1 + itemLabelMultiplier + catY.itemOffset + idxY) * baseUnit,
-          },
-          itemX,
-          itemY,
-          state: 'open'
-        }))
-      )
+      catXIdx,
+      catYIdx,
+      elems: elems.map((row, yIdx) => row.map<ProblemGridElemVm>((e, xIdx) => ({
+        elemId: e.elemId,
+        gridRect: {
+          height: baseUnit,
+          width: baseUnit,
+          x: (1 + itemLabelMultiplier + catXIdx * row.length + xIdx) * baseUnit,
+          y: (1 + itemLabelMultiplier + catYIdx * row.length + yIdx) * baseUnit,
+        },
+        state: e.visibleState
+      })))
     };
   }
 

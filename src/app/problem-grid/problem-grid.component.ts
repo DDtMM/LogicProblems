@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 
-import { GameStateService } from '../game-state.service';
+import { GameStateService } from '../game-state/game-state.service';
 import { gameStateToGridVm } from './game-state-to-grid-vm';
 import { ProblemGridElemVm } from './problem-grid-vm';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-problem-grid',
-  templateUrl: './problem-grid.component.svg',
+  templateUrl: './problem-grid.component.html',
   styleUrls: ['./problem-grid.component.scss']
 })
 export class ProblemGridComponent {
@@ -16,13 +16,13 @@ export class ProblemGridComponent {
   readonly gridVm$ = this.gameStateSvc.gameState$.pipe(
     map(x => x ? gameStateToGridVm(x, this.baseUnit, this.itemLabelMultiplier) : undefined)
   );
-  itemLabelMultiplier = 5;
+  itemLabelMultiplier = 4;
 
   constructor(private gameStateSvc: GameStateService) { }
 
   /** This is temporarilary updating the vm.  It should update a state. */
   toggleState(elem: ProblemGridElemVm) {
-    //this.gameStateSvc.toggleState(elem.)
+    this.gameStateSvc.toggleState(elem.elemId);
   }
 
 }

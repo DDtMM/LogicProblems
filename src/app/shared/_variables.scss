@@ -1,0 +1,22 @@
+$themes: (
+  bw: (
+    colorX: #f4f4f4,
+    colorXAlt: #fff,
+    colorY: #fcfcfc,
+    colorYAlt: #f4f4f4,
+    foreColor: #111
+  ),
+  highContrast: (
+    colorX: #222,
+    colorXAlt: #000,
+    colorY: #111,
+    colorYAlt: #222,
+    foreColor: #ff0,
+  ),
+  sunset: (
+    colorX: #ffddf4,
+    colorY: #ffffdd,
+    foreColor: #171,
+    gridColorStepAmt: -4%
+  )
+);
