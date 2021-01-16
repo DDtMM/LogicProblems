@@ -1,12 +1,12 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { ElemState, GameState } from '../game-state/game-state';
+import { ElemState, GameState, GameStateMatrix } from '../game-state/game-state';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm, ProblemGridVmCategoryMatrix } from './problem-grid-vm';
 
-export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLabelMultiplier: number): ProblemGridVm {
-  const xCats = gameState.matrices[0].map(m => m.catX).map((cat, _, cats) => categoryToVm(cat, cats, false));
-  const yCats = gameState.matrices.map(r => r[0].catY).map((cat, _, cats) => categoryToVm(cat, cats, true));
-  const matrices = gameState.matrices.map((x, catYIdx) => x.map(({ elems }, catXIdx) =>
+export function gameStateToGridVm(gameStateMatrices: GameStateMatrix[][], baseUnit: number, itemLabelMultiplier: number): ProblemGridVm {
+  const xCats = gameStateMatrices[0].map(m => m.catX).map((cat, _, cats) => categoryToVm(cat, cats, false));
+  const yCats = gameStateMatrices.map(r => r[0].catY).map((cat, _, cats) => categoryToVm(cat, cats, true));
+  const matrices = gameStateMatrices.map((x, catYIdx) => x.map(({ elems }, catXIdx) =>
     createCategoryMatrix(catXIdx, catYIdx, elems)));
   const totalLength = (1 + itemLabelMultiplier + xCats.reduce((prev, cur) => prev + cur.items.length, 0)) * baseUnit + 1;
   const tracks = [...createTrackRects(xCats, false), ...createTrackRects(yCats, true)];
@@ -38,8 +38,7 @@ export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLa
           ? { height: baseUnit, width: itemLabelLength, x: baseUnit, y: (1 + itemLabelMultiplier + itemOffset + itemIndex) * baseUnit }
           : { height: itemLabelLength, width: baseUnit, x: (1 + itemLabelMultiplier + itemOffset + itemIndex) * baseUnit, y: baseUnit },
         isLabelVert: !isVert
-      })),
-      itemOffset
+      }))
     };
   }
 
@@ -49,6 +48,7 @@ export function gameStateToGridVm(gameState: GameState, baseUnit: number, itemLa
       catYIdx,
       elems: elems.map((row, yIdx) => row.map<ProblemGridElemVm>((e, xIdx) => ({
         elemId: e.elemId,
+        error: e.validationError,
         gridRect: {
           height: baseUnit,
           width: baseUnit,

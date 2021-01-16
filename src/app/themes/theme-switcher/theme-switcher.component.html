@@ -1,0 +1,3 @@
+<select class="form-control form-control-sm" [ngModel]="(currentTheme$ | async)?.key" (ngModelChange)="setTheme($event)">
+  <option *ngFor="let opt of themes" [value]="opt.key" >{{opt.label}}</option>
+</select>

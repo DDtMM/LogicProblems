@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { NgxLocalStorageModule } from 'ngx-localstorage';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +9,8 @@ import { ProblemGridLabelDirective } from './problem-grid/problem-grid-label.dir
 import { ProblemHostComponent } from './problem-host/problem-host.component';
 import { ProblemCluesComponent } from './problem-clues/problem-clues.component';
 import { ProblemGridRectDirective } from './problem-grid/problem-grid-rect.directive';
+import { ThemeSwitcherComponent } from './themes/theme-switcher/theme-switcher.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,10 +19,13 @@ import { ProblemGridRectDirective } from './problem-grid/problem-grid-rect.direc
     ProblemGridLabelDirective,
     ProblemHostComponent,
     ProblemCluesComponent,
-    ProblemGridRectDirective
+    ProblemGridRectDirective,
+    ThemeSwitcherComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    NgxLocalStorageModule.forRoot(),
     AppRoutingModule
   ],
   providers: [],

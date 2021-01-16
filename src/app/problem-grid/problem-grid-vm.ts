@@ -1,4 +1,4 @@
-import { ElemStateValue } from '../game-state/game-state';
+import { ElemStateValue, ValidationError } from '../game-state/game-state';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemItem } from '../models/problem-item';
 
@@ -12,27 +12,28 @@ export interface Rect extends Point2d {
   width: number;
 }
 
+/** The base of an item or category */
+export interface ProblemAttributeVm {
+  labelRect: Rect;
+  isLabelVert: boolean;
+}
+
 export interface ProblemGridElemVm {
   /** The id of the associated game element */
   elemId: number;
+  error?: ValidationError;
   /** The location and size of the grid item */
   gridRect: Rect;
   /** The current visual state of the element. */
   state: ElemStateValue;
 }
 
-export interface ProblemItemVm extends ProblemItem {
-  labelRect: Rect;
-  isLabelVert: boolean;
-}
-export interface ProblemCategoryVm extends ProblemCategory {
-  labelRect: Rect;
-  isLabelVert: boolean;
+export type ProblemItemVm = ProblemItem & ProblemAttributeVm;
+
+export interface ProblemCategoryVm extends ProblemCategory, ProblemAttributeVm {
   items: ProblemItemVm[];
   /** The index in which this category appears. */
   index: number;
-  /** What it the total count of items that occur before this category. */
-  itemOffset: number;
 }
 
 export interface ProblemGridVmCategoryMatrix {
@@ -59,5 +60,4 @@ export interface ProblemGridVm {
   xCats: ProblemCategoryVm[];
   /** All possible y-axis categories. */
   yCats: ProblemCategoryVm[];
-
 }

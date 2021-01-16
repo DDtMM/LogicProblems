@@ -1,4 +1,4 @@
-<svg class="theme-sunset" *ngIf="(gridVm$ | async) as gridVm" [attr.viewBox]="'0 0 ' + gridVm.totalLength + ' ' +gridVm.totalLength">
+<svg *ngIf="(gridVm$ | async) as gridVm" [attr.viewBox]="'0 0 ' + gridVm.totalLength + ' ' +gridVm.totalLength">
   <defs>
     <g id="acceptIcon" fill="#0d1" stroke-width="1" stroke="#080">
       <circle [attr.cx]="baseUnit / 2" [attr.cy]="baseUnit / 2" [attr.r]="baseUnit / 3" />
@@ -36,8 +36,17 @@
         <ng-container *ngFor="let matrixRow of catMatrix.elems">
           <g class="grid-cell" *ngFor="let mElem of matrixRow" (click)="toggleState(mElem); $event.stopPropagation();">
             <rect appProblemGridRect [catX]="catMatrix.catXIdx" [catY]="catMatrix.catYIdx" [rect]="mElem.gridRect"  />
-            <use href="#rejectIcon" *ngIf="mElem.state === 'reject'" appProblemGridRect [rect]="mElem.gridRect"  />
-            <use href="#acceptIcon" *ngIf="mElem.state === 'accept'" appProblemGridRect [rect]="mElem.gridRect"  />
+          </g>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngFor="let matricesRow of (values$ | async)">
+      <ng-container *ngFor="let catMatrix of matricesRow">
+        <ng-container *ngFor="let matrixRow of catMatrix.elems">
+          <g *ngFor="let mElem of matrixRow" (click)="toggleState(mElem); $event.stopPropagation();">
+            <rect *ngIf="mElem.error" fill="#ff0000" appProblemGridRect [rect]="mElem.gridRect"></rect>
+            <use href="#rejectIcon" pointer-events="none" *ngIf="mElem.state === 'reject'" appProblemGridRect [rect]="mElem.gridRect"  />
+            <use href="#acceptIcon" pointer-events="none" *ngIf="mElem.state === 'accept'" appProblemGridRect [rect]="mElem.gridRect"  />
           </g>
         </ng-container>
       </ng-container>

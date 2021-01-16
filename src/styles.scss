@@ -1,6 +1,41 @@
 
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import './app/shared/variables';
+
 body {
   min-height: 100vh;
   height: 100vh;
   max-height: 100vh;
+}
+@each $theme, $themeMap in $themes {
+  $backgroundColor: map-get($themeMap, backgroundColor);
+  $colorX: map-get($themeMap, colorX);
+  $colorY: map-get($themeMap, colorY);
+  $colorXAlt: map-get($themeMap, colorXAlt);
+  $colorYAlt: map-get($themeMap, colorYAlt);
+  $foreColor: map-get($themeMap, foreColor);
+  $stepAmt: map-get($themeMap, gridColorStepAmt);
+
+  .theme-#{$theme} {
+    color: $foreColor;
+    background: $backgroundColor;
+    .navbar-light {
+      &.bg-light {
+        background: linear-gradient(mix($colorX, #888, 95%), mix($colorX, #777, 90%));
+      }
+    }
+    .navbar-light .navbar-brand, .form-control {
+      color:  $foreColor;
+    }
+    .form-control {
+      background: $backgroundColor;
+    }
+    .bg-light {
+      background-color: mix($colorX, #888, 95%) !important;
+    }
+    .list-group-item {
+      background-color: $colorY;
+      border-color: if($backgroundColor != null, mix($foreColor, $backgroundColor, 20%), null);
+    }
+  }
 }

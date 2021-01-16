@@ -17,6 +17,7 @@ svg {
   }
   > text {
     font: 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    text-rendering: optimizeLegibility;
     &.cat-label {
       font-weight: bold;
     }
@@ -26,7 +27,7 @@ svg {
 
 @function getGridFillColor($idx, $baseColor, $altColor, $stepAmt) {
   $color: if($altColor == null or ($idx % 2) == 1, $baseColor, $altColor);
-  @return if($stepAmt == null, $color, color.adjust($color, $lightness: $idx * $stepAmt));
+  @return if($stepAmt == null, $color, color.adjust($color, $lightness: ($idx - 1) * $stepAmt));
 }
 @each $theme, $themeMap in $themes {
   $colorX: map-get($themeMap, colorX);
