@@ -26,7 +26,6 @@ export class ProblemGridComponent {
   itemLabelMultiplier = 4;
   readonly values$ = this.gameStateSvc.gameState$.pipe(
     filter((x): x is GameState => !!x),
-    tap(x => console.log(x)),
     map((x) => gameStateToGridVm(x.matrices, this.baseUnit, this.itemLabelMultiplier).matrices)
   );
 

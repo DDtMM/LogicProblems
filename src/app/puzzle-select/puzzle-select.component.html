@@ -1,0 +1,5 @@
+<ul class="list-group">
+  <li class="list-group-item" *ngFor="let puzzle of puzzles; let idx = index" [routerLink]="['/puzzles', idx]">
+    {{puzzle.label}}
+  </li>
+</ul>
