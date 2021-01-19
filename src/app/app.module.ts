@@ -12,7 +12,7 @@ import { ProblemCluesComponent } from './problem-clues/problem-clues.component';
 import { ProblemGridRectDirective } from './problem-grid/problem-grid-rect.directive';
 import { ThemeSwitcherComponent } from './themes/theme-switcher/theme-switcher.component';
 import { FormsModule } from '@angular/forms';
-import { PuzzleSelectComponent } from './puzzle-select/puzzle-select.component';
+import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
 
 @NgModule({
   declarations: [

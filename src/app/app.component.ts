@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { map, shareReplay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
-import { GameStateService } from './game-state/game-state.service';
 import { ThemesService } from './themes/themes.service';
 
 @Component({
@@ -9,14 +8,10 @@ import { ThemesService } from './themes/themes.service';
   templateUrl: './app.component.html',
   styles: []
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   readonly themeClass$ = this.themesSvc.currentTheme$.pipe(
     map(x => `theme-${x.key}`)
   );
 
   constructor(private themesSvc: ThemesService) {}
-
-  ngOnInit() {
-
-  }
 }

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProblemHostComponent } from './problem-host/problem-host.component';
-import { PuzzleSelectComponent } from './puzzle-select/puzzle-select.component';
-import { PuzzleGuard } from './puzzle-select/puzzle.guard';
+import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
+import { PuzzleGuard } from './puzzles/puzzle.guard';
 
 const routes: Routes = [
   { path: '', component: PuzzleSelectComponent },

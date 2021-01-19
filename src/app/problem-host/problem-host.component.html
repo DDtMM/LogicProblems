@@ -2,7 +2,14 @@
   <div class="shadow-sm">
     <app-problem-grid></app-problem-grid>
   </div>
-  <div>
-    <app-problem-clues [clues]="(gameState$ | async)?.def?.clues"></app-problem-clues>
+  <div class="d-flex flex-column h-100">
+    <div class="d-flex flex-column h-100">
+      <nav class="flex-shrink-1 navbar navbar-light bg-secondary text-light">
+        Clues
+      </nav>
+      <div class="flex-grow-1" style="overflow: auto">
+        <app-problem-clues [clues]="(gameState$ | async)?.def?.clues"></app-problem-clues>
+      </div>
+    </div>
   </div>
 </div>

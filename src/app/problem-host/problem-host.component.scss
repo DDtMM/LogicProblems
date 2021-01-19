@@ -33,12 +33,12 @@ app-problem-grid {
       &:first-child {
         flex: 0 1 ;
         max-height: unset;
-        max-width: 65%;
+        max-width: 60%;
       }
       &:nth-child(2) {
         flex: 1 0;
         max-height: unset;
-        min-width: 35%;
+        min-width: 40%;
       }
     }
   }
