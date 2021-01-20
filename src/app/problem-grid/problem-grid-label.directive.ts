@@ -26,8 +26,8 @@ export class ProblemGridLabelDirective implements OnChanges {
   attrY = 0;
 
   /** How many grid units long is the label. */
-  @Input()
-  rect?: Rect;
+  @Input('appProblemGridLabel')
+  rect!: Rect;
 
   /** padding in grid units */
   @Input()

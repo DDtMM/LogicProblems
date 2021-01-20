@@ -1,19 +1,31 @@
 # LogicProblems
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
+Class logic puzzles game.  Fun for people ages 8 through 88.
+
+## Features
+* Multiple sample puzzles
+* Puzzle selector
+* Puzzle validation
+* Reactive UI
+* Scalable grid
+* Themes
 
 ## TODO
 
-* Make grid drawing more efficient (stop redrawing categories after every)
-* Move validation
 * Command history
-* Proper update of siblings
+* undo/redo
 * Home screen
 * Real Puzzles
-* Simple Puzzle validator
+* Puzzles in one file/bundled.
+* Check answer.
+* Clue spans and clue cross out.
 
 ## Future
 
 * Describe logic impact within clue statements.
 * Complex Puzzle Validator
 * Puzzle Builder.
+
+## Other ideas
+
+* Rotate categories:  Change the order of categories (might help solving the problem if you see it in a different way).

@@ -3,55 +3,41 @@
     <g id="acceptIcon" fill="#0d1" stroke-width="1" stroke="#080">
       <circle [attr.cx]="baseUnit / 2" [attr.cy]="baseUnit / 2" [attr.r]="baseUnit / 3" />
     </g>
-    <g id="rejectIcon" stroke="red" stroke-width="2">
+    <g id="rejectIcon" stroke-width="2">
       <line x1="3" y1="3" [attr.x2]="baseUnit - 3" [attr.y2]="baseUnit - 3" />
       <line x1="3" [attr.y1]="baseUnit - 3" [attr.x2]="baseUnit - 3" y2="3" />
     </g>
   </defs>
   <g transform="translate(.5, .5)">
-    <ng-container *ngFor="let cat of gridVm!.xCats">
-      <g class="grid-cell">
-        <rect appProblemGridRect [catX]="cat.index" [rect]="cat.labelRect" />
-        <text appProblemGridLabel class="cat-label" textAlign="center" [rect]="cat.labelRect">{{cat.label}}</text>
-      </g>
-      <g class="grid-cell" *ngFor="let item of cat.items; let index = index">
-        <rect appProblemGridRect [catX]="cat.index" [rect]="item.labelRect" />
-        <text appProblemGridLabel orientation="vert" [rect]="item.labelRect">{{item.label}}</text>
-      </g>
-    </ng-container>
-    <ng-container *ngFor="let cat of gridVm!.yCats">
-      <g class="grid-cell">
-        <rect appProblemGridRect [catY]="cat.index" [rect]="cat.labelRect" />
-        <text appProblemGridLabel class="cat-label" textAlign="center" orientation="vert" [rect]="cat.labelRect">
+    <g class="game-grid">
+      <ng-container *ngFor="let cat of gridVm!.xCats">
+        <rect [appProblemGridRect]="cat.labelRect" [catX]="cat.index" />
+        <text [appProblemGridLabel]="cat.labelRect" class="cat-label" textAlign="center">{{cat.label}}</text>
+        <ng-container *ngFor="let item of cat.items; let index = index">
+          <rect [appProblemGridRect]="item.labelRect" [catX]="cat.index" />
+          <text [appProblemGridLabel]="item.labelRect" orientation="vert">{{item.label}}</text>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngFor="let cat of gridVm!.yCats">
+        <rect [appProblemGridRect]="cat.labelRect" [catY]="cat.index"  />
+        <text [appProblemGridLabel]="cat.labelRect" class="cat-label" textAlign="center" orientation="vert">
           {{cat.label}}
         </text>
-      </g>
-      <g class="grid-cell" *ngFor="let item of cat.items; let index = index">
-        <rect appProblemGridRect [catY]="cat.index" [rect]="item.labelRect" />
-        <text appProblemGridLabel textAlign="right" [rect]="item.labelRect">{{item.label}}</text>
-      </g>
-    </ng-container>
-    <ng-container *ngFor="let matricesRow of gridVm!.matrices">
-      <ng-container *ngFor="let catMatrix of matricesRow">
-        <ng-container *ngFor="let matrixRow of catMatrix.elems">
-          <g class="grid-cell" *ngFor="let mElem of matrixRow" (click)="toggleState(mElem); $event.stopPropagation();">
-            <rect appProblemGridRect [catX]="catMatrix.catXIdx" [catY]="catMatrix.catYIdx" [rect]="mElem.gridRect"  />
-          </g>
+        <ng-container *ngFor="let item of cat.items; let index = index">
+          <rect [appProblemGridRect]="item.labelRect" [catY]="cat.index"  />
+          <text [appProblemGridLabel]="item.labelRect" textAlign="right">{{item.label}}</text>
         </ng-container>
       </ng-container>
-    </ng-container>
-    <ng-container *ngFor="let matricesRow of (values$ | async)">
-      <ng-container *ngFor="let catMatrix of matricesRow">
-        <ng-container *ngFor="let matrixRow of catMatrix.elems">
-          <g *ngFor="let mElem of matrixRow" (click)="toggleState(mElem); $event.stopPropagation();">
-            <rect *ngIf="mElem.error" fill="#ff0000" appProblemGridRect [rect]="mElem.gridRect"></rect>
-            <use href="#rejectIcon" pointer-events="none" *ngIf="mElem.state === 'reject'" appProblemGridRect [rect]="mElem.gridRect"  />
-            <use href="#acceptIcon" pointer-events="none" *ngIf="mElem.state === 'accept'" appProblemGridRect [rect]="mElem.gridRect"  />
-          </g>
-        </ng-container>
-      </ng-container>
-    </ng-container>
+      <g *ngFor="let elem of gridVm!.elems" (click)="toggleState(elem); $event.stopPropagation();">
+        <rect [appProblemGridRect]="elem.gridRect" [catX]="elem.catXIdx" [catY]="elem.catYIdx"  />
+      </g>
+      <g *ngFor="let mElem of (values$ | async)" [attr.class]="mElem.error ? 'has-error' : ''" pointer-events="none">
+        <rect *ngIf="mElem.error" fill="#ff0000" [appProblemGridRect]="mElem.gridRect"></rect>
+        <use href="#rejectIcon" *ngIf="mElem.state === 'reject'" [appProblemGridRect]="mElem.gridRect" />
+        <use href="#acceptIcon" *ngIf="mElem.state === 'accept'" [appProblemGridRect]="mElem.gridRect" />
+      </g>
+    </g>
     <rect *ngFor="let track of gridVm!.tracks" stroke-width=".8" fill="transparent" pointer-events="none"
-      [attr.height]="track.height" [attr.width]="track.width" [attr.x]="track.x" [attr.y]="track.y" />
+      [appProblemGridRect]="track" />
   </g>
 </svg>

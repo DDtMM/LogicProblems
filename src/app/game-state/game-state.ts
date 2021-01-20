@@ -24,13 +24,17 @@ export interface ElemState {
   validationError?: ValidationError;
   /** The state that should be shown. */
   visibleState: ElemStateValue;
-  /** the matrix xIndex */
+  /** the elem xIndex */
   xIdx: number;
-  /** the matrix yIndex */
+  /** the elem yIndex */
   yIdx: number;
 }
 export interface GameStateMatrix {
   catX: ProblemCategory;
   catY: ProblemCategory;
   elems: ElemState[][];
+  /** the matrix xIndex */
+  xIdx: number;
+  /** the matrix yIndex */
+  yIdx: number;
 }

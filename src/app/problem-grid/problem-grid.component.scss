@@ -10,24 +10,28 @@ svg {
     height: 100%;
   }
 }
-
-.grid-cell {
-  > rect {
+text {
+  font: 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  text-rendering: optimizeLegibility;
+  &.cat-label {
+    font-weight: bold;
+  }
+}
+.game-grid {
+  rect {
     stroke-width: .25;
   }
-  > text {
-    font: 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    text-rendering: optimizeLegibility;
-    &.cat-label {
-      font-weight: bold;
-    }
-    fill: #000;
+}
+[href="#rejectIcon"] {
+  stroke: red;
+  .has-error & {
+    stroke: black;
   }
 }
 
 @function getGridFillColor($idx, $baseColor, $altColor, $stepAmt) {
-  $color: if($altColor == null or ($idx % 2) == 1, $baseColor, $altColor);
-  @return if($stepAmt == null, $color, color.adjust($color, $lightness: ($idx - 1) * $stepAmt));
+  $color: if($altColor == null or ($idx % 2) == 0, $baseColor, $altColor);
+  @return if($stepAmt == null, $color, color.adjust($color, $lightness: $idx * $stepAmt));
 }
 @each $theme, $themeMap in $themes {
   $colorX: map-get($themeMap, colorX);
@@ -41,26 +45,24 @@ svg {
     rect {
       stroke: $foreColor;
     }
-    .grid-cell {
-      > text {
-        fill: $foreColor;
+    text {
+      fill: $foreColor;
+    }
+
+    @for $i from 0 through 7 {
+      $stepColorX: getGridFillColor($i, $colorX, $colorXAlt, $stepAmt);
+      $stepColorY: getGridFillColor($i, $colorY, $colorYAlt, $stepAmt);
+
+      &.cat-x-#{$i}, .cat-x-#{$i} {
+        fill: $stepColorX;
       }
-
-      @for $i from 1 through 5 {
-        $stepColorX: getGridFillColor($i, $colorX, $colorXAlt, $stepAmt);
-        $stepColorY: getGridFillColor($i, $colorY, $colorYAlt, $stepAmt);
-
-        &.cat-x-#{$i}, .cat-x-#{$i} {
-          fill: $stepColorX;
-        }
-        &.cat-y-#{$i}, .cat-y-#{$i} {
-          fill: $stepColorY;
-          // create classes for when y and x intersect.
-          @for $j from 1 through 5 {
-            $innerColorX: getGridFillColor($j, $colorX, $colorXAlt, $stepAmt);
-            &.cat-x-#{$j} {
-              fill: mix($innerColorX, $stepColorY, 50%);
-            }
+      &.cat-y-#{$i}, .cat-y-#{$i} {
+        fill: $stepColorY;
+        // create classes for when y and x intersect.
+        @for $j from 0 through 7 {
+          $innerColorX: getGridFillColor($j, $colorX, $colorXAlt, $stepAmt);
+          &.cat-x-#{$j} {
+            fill: mix($innerColorX, $stepColorY, 50% + -50% * ($i / 7) + 50% * ($j / 7) );
           }
         }
       }

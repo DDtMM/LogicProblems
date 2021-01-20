@@ -4,7 +4,7 @@ import { filter, map, shareReplay, startWith, switchMap, take, tap, withLatestFr
 import { GameState } from '../game-state/game-state';
 
 import { GameStateService } from '../game-state/game-state.service';
-import { gameStateToGridVm } from './game-state-to-grid-vm';
+import { elemToGridVm, gameStateToGridVm } from './game-state-to-grid-vm';
 import { ProblemGridElemVm } from './problem-grid-vm';
 
 @Component({
@@ -22,11 +22,11 @@ export class ProblemGridComponent {
     filter((x, i) => i === 0 || x.action === 'init'),
     map((x) => gameStateToGridVm(x.matrices, this.baseUnit, this.itemLabelMultiplier))
   );
-
   itemLabelMultiplier = 4;
+
   readonly values$ = this.gameStateSvc.gameState$.pipe(
     filter((x): x is GameState => !!x),
-    map((x) => gameStateToGridVm(x.matrices, this.baseUnit, this.itemLabelMultiplier).matrices)
+    map((x) => Array.from(x.elements.values()).map(y => elemToGridVm(y, this.baseUnit, this.itemLabelMultiplier)))
   );
 
   constructor(private gameStateSvc: GameStateService) { }

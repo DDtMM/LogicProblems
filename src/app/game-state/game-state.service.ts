@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -15,25 +16,34 @@ export class GameStateService {
   constructor() { }
 
   initState(def: ProblemDef) {
-    let nextElementId = 0;
-    const xCats = [def.categories[0], ...def.categories.slice(2)];
-    const yCats = [def.categories[1], ...def.categories.slice(3), ...def.categories.slice(2, 3)];
-    const matrices = yCats.map((catY, yIdx) => xCats.slice(0, xCats.length - yIdx).map(catX => ({ catX, catY })))
-      .map(intersections => intersections.map(({ catX, catY }) => {
-        const matrix = this.createMatrix(catX, catY, nextElementId);
-        nextElementId = Math.max(...matrix.elems.flat().map(x => x.elemId)) + 1;
-        return matrix;
-      }));
-
+    const matrices = createMatrices();
     const elements = new Map(matrices.flatMap(x => x.flatMap(y => y.elems.flat())).map(x => [x.elemId, x]));
-
-    const gameState: GameState = {
-      action: 'init',
-      def,
-      elements,
-      matrices
-    };
+    const gameState: GameState = { action: 'init', def, elements, matrices };
     this.gameState$.next(gameState);
+
+    function createMatrices() {
+      let matrixIdx = 0;
+      const matrixSize = Math.pow(def.categories[0].items.length, 2);
+      const xCats = [def.categories[0], ...def.categories.slice(2)];
+      const yCats = [def.categories[1], ...def.categories.slice(3), ...def.categories.slice(2, 3)];
+      return yCats.map((catY, yIdx) => xCats.slice(0, xCats.length - yIdx)
+        .map((catX, xIdx) => addElements({ catX, catY, elems: [], xIdx, yIdx }, matrixSize * matrixIdx++)));
+    }
+    function addElements(matrix: GameStateMatrix, nextElemId: number) {
+      matrix.catY.items.forEach((_, yIdx) =>
+        matrix.elems.push(
+          matrix.catX.items.map<ElemState>((__, xIdx) => ({
+            elemId: nextElemId++,
+            explicitState: 'open',
+            matrix,
+            visibleState: 'open',
+            xIdx,
+            yIdx
+          }))
+        )
+      );
+      return matrix;
+    }
   }
 
   toggleState(elemId: number) {
@@ -49,17 +59,11 @@ export class GameStateService {
     const elem = gs?.elements.get(elemId);
     if (gs && elem) {
       elem.explicitState = elem.visibleState = nextState;
-      const { matrix, yIdx, xIdx } = elem;
-      if (nextState === 'open') {
-        matrix.elems[yIdx].concat(matrix.elems.map(x => x[xIdx]))
-          .filter(x => x.explicitState !== x.visibleState)
-          .forEach(x => x.visibleState = x.explicitState);
-      }
-      else if (nextState === 'accept') {
-        matrix.elems[yIdx].concat(matrix.elems.map(x => x[xIdx]))
-          .filter(x => x.visibleState === 'open')
-          .forEach(x => x.visibleState = 'reject');
-      }
+      elem.matrix.elems.flat().filter(x => x.explicitState === 'open')
+        .forEach(x => {
+          const { col, row } = this.getSiblings(x);
+          x.visibleState = col.concat(row).some(y => y.visibleState === 'accept') ? 'reject' : 'open';
+        });
       this.validateGame(gs);
       gs.action = 'update';
       this.gameState$.next(gs);
@@ -105,27 +109,7 @@ export class GameStateService {
     return undefined;
   }
 
-  /** cretes  matrix for two cateogries. */
-  private createMatrix(catX: ProblemCategory, catY: ProblemCategory, nextElemId: number) {
-    const matrix: GameStateMatrix = {
-      catX,
-      catY,
-      elems: []
-    };
-    catY.items.forEach((_, yIdx) =>
-      matrix.elems.push(
-        catX.items.map<ElemState>((__, xIdx) => ({
-          elemId: nextElemId++,
-          explicitState: 'open',
-          matrix,
-          visibleState: 'open',
-          xIdx,
-          yIdx
-        }))
-      )
-    );
-    return matrix;
-  }
+
 
   private getMatrixCols(matrix: GameStateMatrix) {
     // since the matrix is a square, converting rows to cols is as simple as swapping indexes.

@@ -22,7 +22,7 @@ export class ProblemGridRectDirective implements OnChanges {
   attrY = 0;
 
   /** required rectangle. */
-  @Input()
+  @Input('appProblemGridRect')
   rect?: Rect;
 
   /** Optional x dimension index. */
@@ -44,10 +44,10 @@ export class ProblemGridRectDirective implements OnChanges {
   private update() {
     const classes: string[] = [];
     if (this.catX != null) {
-      classes.push(`cat-x-${this.catX + 1}`);
+      classes.push(`cat-x-${this.catX}`);
     }
     if (this.catY != null) {
-      classes.push(`cat-y-${this.catY + 1}`);
+      classes.push(`cat-y-${this.catY}`);
     }
     this.attrClass = classes.join(' ');
     this.attrHeight = this.rect?.height || 0;

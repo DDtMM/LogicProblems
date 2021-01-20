@@ -19,6 +19,8 @@ export interface ProblemAttributeVm {
 }
 
 export interface ProblemGridElemVm {
+  catXIdx: number;
+  catYIdx: number;
   /** The id of the associated game element */
   elemId: number;
   error?: ValidationError;
@@ -36,22 +38,9 @@ export interface ProblemCategoryVm extends ProblemCategory, ProblemAttributeVm {
   index: number;
 }
 
-export interface ProblemGridVmCategoryMatrix {
-  /** The category along the x axis represented by this matrix. */
-  catXIdx: number;
-  /** The category along the y axis represented by this matrix. */
-  catYIdx: number;
-  /** All elements. */
-  elems: ProblemGridElemVm[][];
-}
-
 export interface ProblemGridVm {
-  /** The size of a grid block */
-  baseUnit: number;
-  /** The number of grid blocks an item label takes up. */
-  itemLabelMultiplier: number;
-  /** 2d array of CategoryMatrix. */
-  matrices: ProblemGridVmCategoryMatrix[][];
+  /** All elements */
+  elems: ProblemGridElemVm[];
   /** The total width and height of the grid. */
   totalLength: number;
   /** Rectangles that encompass the total area of a category. */

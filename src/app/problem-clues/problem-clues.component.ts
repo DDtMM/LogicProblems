@@ -3,8 +3,7 @@ import { ProblemClue } from '../models/problem-clue';
 
 @Component({
   selector: 'app-problem-clues',
-  templateUrl: './problem-clues.component.html',
-  styleUrls: ['./problem-clues.component.scss']
+  templateUrl: './problem-clues.component.html'
 })
 export class ProblemCluesComponent {
   @Input()
