@@ -1,6 +1,7 @@
 <div class="w-100 h-100 d-flex flex-column" [ngClass]="(themeClass$ | async) || ''">
   <nav class="navbar navbar-light bg-light shadow-sm" style="z-index: 2;">
-    <a class="navbar-brand" href="#">Logic Problems</a>
+    <a class="navbar-brand flex-grow-1" href="#">Logic Problems</a>
+    <router-outlet name="menu"></router-outlet>
     <app-theme-switcher></app-theme-switcher>
   </nav>
   <div class="flex-shrink-1 h-100" style="position: relative;">

@@ -13,6 +13,7 @@ import { ProblemGridRectDirective } from './problem-grid/problem-grid-rect.direc
 import { ThemeSwitcherComponent } from './themes/theme-switcher/theme-switcher.component';
 import { FormsModule } from '@angular/forms';
 import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
+import { GameMenuComponent } from './game-menu/game-menu.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
     ProblemCluesComponent,
     ProblemGridRectDirective,
     ThemeSwitcherComponent,
-    PuzzleSelectComponent
+    PuzzleSelectComponent,
+    GameMenuComponent
   ],
   imports: [
     BrowserModule,

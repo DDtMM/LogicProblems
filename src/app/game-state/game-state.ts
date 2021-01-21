@@ -1,3 +1,4 @@
+import { IdType } from '../models/id-type';
 import { ProblemCategory } from '../models/problem-category';
 import { ProblemDef } from '../models/problem-def';
 
@@ -5,13 +6,31 @@ export type GameAction = 'init' | 'update';
 export type ElemStateValue = 'accept' | 'open' | 'reject';
 export type ValidationError = 'dimensionRejected' | 'multipleAccepted';
 
+export interface GameStateHistoryItem {
+  currentState: ElemStateValue;
+  elemId: number;
+  priorState: ElemStateValue;
+}
+
+export interface SavedGame {
+  history: GameStateHistoryItem[];
+  puzzleId: number;
+}
+
+export interface SavedGames {
+  [key: number]: SavedGame;
+}
+
 export interface GameState {
+  /** The last action. */
   action: GameAction;
   def: ProblemDef;
   elements: Map<number, ElemState>;
   /** If true then there are errors. */
   hasErrors?: boolean;
+  history: GameStateHistoryItem[];
   matrices: GameStateMatrix[][];
+  puzzleId: number;
 }
 
 export interface ElemState {

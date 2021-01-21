@@ -20,7 +20,7 @@ export class PuzzleGuard implements CanActivate {
       return of(false);
     }
     return this.puzzlesSvc.puzzles[puzzleIdx].def$.pipe(
-      tap(x => this.gameStateSvc.initState(x)),
+      tap(x => this.gameStateSvc.initState(x, puzzleIdx)),
       map(x => !!x)
     );
   }

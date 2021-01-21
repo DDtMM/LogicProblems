@@ -62,7 +62,7 @@ text {
         @for $j from 0 through 7 {
           $innerColorX: getGridFillColor($j, $colorX, $colorXAlt, $stepAmt);
           &.cat-x-#{$j} {
-            fill: mix($innerColorX, $stepColorY, 50% + -50% * ($i / 7) + 50% * ($j / 7) );
+            fill: mix($innerColorX, $stepColorY, 50%);
           }
         }
       }

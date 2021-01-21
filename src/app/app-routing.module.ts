@@ -1,12 +1,20 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { GameMenuComponent } from './game-menu/game-menu.component';
 import { ProblemHostComponent } from './problem-host/problem-host.component';
 import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
 import { PuzzleGuard } from './puzzles/puzzle.guard';
 
 const routes: Routes = [
   { path: '', component: PuzzleSelectComponent },
-  { path: 'puzzles/:puzzleIdx', component: ProblemHostComponent, canActivate: [ PuzzleGuard ] }
+  {
+    path: 'puzzles/:puzzleIdx',
+    canActivate: [PuzzleGuard],
+    children: [
+      { path: '', component: ProblemHostComponent },
+      { path: '', component: GameMenuComponent, outlet: 'menu' }
+    ]
+  }
 ];
 
 @NgModule({

@@ -3,22 +3,30 @@
 Class logic puzzles game.  Fun for people ages 8 through 88.
 
 ## Features
+* Command history
+  * Undo
 * Multiple sample puzzles
 * Puzzle selector
 * Puzzle validation
 * Reactive UI
+* Save game progress.
 * Scalable grid
 * Themes
 
 ## TODO
-
-* Command history
-* undo/redo
+* Check answer.
+  * When all of top row completed display message.
+* Clue spans and clue cross out.
+  * Problem defintion for clue is array of strings.
+  * Each string can be toggled as crossed out.
+* Flags
+  * Toggle squares with color.
+  * Clear all with button.
 * Home screen
+* Navigation
 * Real Puzzles
 * Puzzles in one file/bundled.
-* Check answer.
-* Clue spans and clue cross out.
+* Track time played.
 
 ## Future
 

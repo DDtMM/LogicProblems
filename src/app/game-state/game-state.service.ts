@@ -1,25 +1,28 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { Injectable } from '@angular/core';
+import { LocalStorageService } from 'ngx-localstorage';
 import { BehaviorSubject } from 'rxjs';
-
-import { ProblemCategory } from '../models/problem-category';
 import { ProblemDef } from '../models/problem-def';
-import { ElemState, ElemStateValue, GameState, GameStateMatrix, ValidationError } from './game-state';
+import { ElemState, ElemStateValue, GameState, GameStateMatrix, SavedGame, SavedGames, ValidationError } from './game-state';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameStateService {
-
+  private static gameStatesCacheKey = 'gameState_gameStates';
+  /** States in toggling order. */
+  private static orderedStates: ElemStateValue[] = ['open', 'reject', 'accept'];
   readonly gameState$ = new BehaviorSubject<GameState | undefined>(undefined);
 
-  constructor() { }
+  constructor(private storageSvc: LocalStorageService) { }
 
-  initState(def: ProblemDef) {
+  initState(def: ProblemDef, puzzleId: number) {
     const matrices = createMatrices();
     const elements = new Map(matrices.flatMap(x => x.flatMap(y => y.elems.flat())).map(x => [x.elemId, x]));
-    const gameState: GameState = { action: 'init', def, elements, matrices };
+    const gameState: GameState = { action: 'init', def, elements, history: [], matrices, puzzleId };
     this.gameState$.next(gameState);
+    this.restoreGame();
 
     function createMatrices() {
       let matrixIdx = 0;
@@ -46,27 +49,59 @@ export class GameStateService {
     }
   }
 
+  restart() {
+    const gs = this.gameState$.value;
+    if (gs) {
+      this.restartCommon(gs);
+      this.finalizeUpdate(gs);
+    }
+  }
+  restoreGame() {
+    const gs = this.gameState$.value;
+    if (gs) {
+      this.restartCommon(gs);
+      const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
+      gs.history = savedGames[gs.puzzleId]?.history || [];
+      gs.history.forEach(x => {
+        const elem = gs.elements.get(x.elemId)!;
+        elem.explicitState = elem.visibleState = x.currentState;
+      });
+      gs.matrices.flat().forEach(x => this.setImpliedStates(x));
+      this.validateGame(gs);
+      this.finalizeUpdate(gs);
+    }
+  }
+  /** Toggles an element to next available state. */
   toggleState(elemId: number) {
     const elem = this.gameState$.value?.elements.get(elemId);
     if (elem) {
-      const nextState = (elem.visibleState === 'accept') ? 'open'
-        : (elem.visibleState === 'open') ? 'reject' : 'accept';
+      const nextIndex = (GameStateService.orderedStates.indexOf(elem.visibleState) + 1) % GameStateService.orderedStates.length;
+      const nextState = GameStateService.orderedStates[nextIndex];
       this.updateState(elemId, nextState);
     }
   }
-  updateState(elemId: number, nextState: ElemStateValue) {
+
+  /** Undos the latest item in history if it exists. */
+  undoState() {
+    const historyItem = this.gameState$.value?.history.pop();
+    if (historyItem) {
+      this.updateState(historyItem.elemId, historyItem.priorState, true);
+    }
+  }
+
+  /** Updates an element's state and emits the change notification. */
+  updateState(elemId: number, nextState: ElemStateValue, ignoreHistory?: boolean) {
     const gs = this.gameState$.value;
     const elem = gs?.elements.get(elemId);
     if (gs && elem) {
+      const priorState = elem.explicitState;
       elem.explicitState = elem.visibleState = nextState;
-      elem.matrix.elems.flat().filter(x => x.explicitState === 'open')
-        .forEach(x => {
-          const { col, row } = this.getSiblings(x);
-          x.visibleState = col.concat(row).some(y => y.visibleState === 'accept') ? 'reject' : 'open';
-        });
+      this.setImpliedStates(elem.matrix);
       this.validateGame(gs);
-      gs.action = 'update';
-      this.gameState$.next(gs);
+      if (!ignoreHistory) {
+        gs.history.push({ currentState: nextState, elemId, priorState });
+      }
+      this.finalizeUpdate(gs);
     }
   }
   /** updates game validations. */
@@ -109,16 +144,47 @@ export class GameStateService {
     return undefined;
   }
 
-
-
   private getMatrixCols(matrix: GameStateMatrix) {
     // since the matrix is a square, converting rows to cols is as simple as swapping indexes.
     return matrix.elems.map((row, yIdx) => row.map((_, xIdx) => matrix.elems[xIdx][yIdx]));
   }
+
   private getSiblings(elem: ElemState) {
     return {
       col: elem.matrix.elems.map(x => x[elem.xIdx]).filter(x => x.yIdx !== elem.yIdx),
       row: elem.matrix.elems[elem.yIdx].filter(x => x.xIdx !== elem.xIdx)
     };
+  }
+
+  private finalizeUpdate(gs: GameState) {
+    this.saveGame();
+    gs.action = 'update';
+    this.gameState$.next(gs);
+  }
+
+  private restartCommon(gs: GameState) {
+    gs.history.length = 0;
+    gs.elements.forEach(x => {
+      x.explicitState = x.visibleState = 'open';
+      x.validationError = undefined;
+    });
+    gs.hasErrors = false;
+  }
+  private saveGame() {
+    const gs = this.gameState$.value;
+    if (gs) {
+      const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
+      savedGames[gs.puzzleId] = { history: gs.history, puzzleId: gs.puzzleId };
+      this.storageSvc.set(GameStateService.gameStatesCacheKey, savedGames);
+    }
+  }
+
+  /** Sets visibleStates on items in matrix that are open. */
+  private setImpliedStates(matrix: GameStateMatrix) {
+    matrix.elems.flat().filter(x => x.explicitState === 'open')
+      .forEach(x => {
+        const { col, row } = this.getSiblings(x);
+        x.visibleState = col.concat(row).some(y => y.visibleState === 'accept') ? 'reject' : 'open';
+      });
   }
 }
