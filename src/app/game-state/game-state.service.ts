@@ -104,6 +104,7 @@ export class GameStateService {
       this.finalizeUpdate(gs);
     }
   }
+
   /** updates game validations. */
   validateGame(gs: GameState) {
     let hasErrors = false;

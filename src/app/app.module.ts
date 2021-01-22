@@ -14,6 +14,7 @@ import { ThemeSwitcherComponent } from './themes/theme-switcher/theme-switcher.c
 import { FormsModule } from '@angular/forms';
 import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
 import { GameMenuComponent } from './game-menu/game-menu.component';
+import { TimerComponent } from './timer/timer.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { GameMenuComponent } from './game-menu/game-menu.component';
     ProblemGridRectDirective,
     ThemeSwitcherComponent,
     PuzzleSelectComponent,
-    GameMenuComponent
+    GameMenuComponent,
+    TimerComponent
   ],
   imports: [
     BrowserModule,
