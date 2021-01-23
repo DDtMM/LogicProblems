@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, defer, interval, Subject } from 'rxjs';
 import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { formatTimespan } from './format-timespan';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +32,7 @@ export class TimerComponent implements OnInit, OnDestroy {
         startWith(initialTime)
       );
     }),
-    map(totalTime => this.formatTime(totalTime)),
+    map(totalTime => formatTimespan(totalTime, 'h?:m:ss')),
   );
 
   private destroyedSubject = new Subject();
@@ -50,23 +51,5 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroyedSubject.next();
-  }
-
-  private formatTime(timeMs: number) {
-    return TimerComponent.timeParts
-      .map(({ partBase, partLimit, requireDelimiter }, idx) => {
-        if (timeMs >= partBase || idx === 0) {
-          const partTime = Math.round(timeMs / partBase);
-          const showDelimiter = (requireDelimiter || partLimit && partTime >= partLimit);
-          const limitedPartTime = partLimit ? partTime % partLimit : partTime;
-          const formattedPartTime = (showDelimiter)
-            ? ':' + limitedPartTime.toString().padStart(partLimit?.toString().length || 0, '0')
-            : limitedPartTime.toString();
-          return formattedPartTime;
-        }
-        return undefined;
-      })
-      .reverse()
-      .join('');
   }
 }

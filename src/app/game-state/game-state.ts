@@ -13,6 +13,8 @@ export interface GameStateHistoryItem {
 }
 
 export interface SavedGame {
+  /** number of elapsed milliseconds. */
+  elapsedMs: number;
   history: GameStateHistoryItem[];
   puzzleId: number;
 }
@@ -30,7 +32,11 @@ export interface GameState {
   hasErrors?: boolean;
   history: GameStateHistoryItem[];
   matrices: GameStateMatrix[][];
+  /** If restored, how much time has elapsed. */
+  priorElapsedMs: number;
   puzzleId: number;
+  /** The time the game session began. */
+  sessionStart: Date;
 }
 
 export interface ElemState {

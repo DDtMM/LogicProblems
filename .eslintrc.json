@@ -37,7 +37,8 @@
             "style": "camelCase"
           }
         ],
-        "@typescript-eslint/no-non-null-assertion": "off"
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "prefer-arrow/prefer-arrow-functions": "off"
       }
     },
     {

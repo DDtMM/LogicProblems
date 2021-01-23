@@ -1,5 +1,7 @@
 <div class="d-flex flex-row">
-  <div class="p-3"><app-timer></app-timer></div>
+  <div class="p-3">
+    <app-timer [elapsedMs]="(elapsedTime$ | async) || 0"></app-timer>
+  </div>
   <button type="button" class="btn btn-sm btn-link" [routerLink]="['/']">Home</button>
   <button type="button" class="btn btn-sm btn-link" (click)="restart()">Restart</button>
   <button type="button" class="btn btn-sm btn-link" [disabled]="!(canUndo$ | async)" (click)="doUndo()">Undo</button>

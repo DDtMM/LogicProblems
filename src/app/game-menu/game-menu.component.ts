@@ -17,6 +17,10 @@ export class GameMenuComponent {
     shareReplay(1)
   );
 
+  readonly elapsedTime$ = this.gameStateSvc.gameState$.pipe(
+    map(x => x ? x.priorElapsedMs + (new Date().valueOf() - x.sessionStart.valueOf()) : 0)
+  );
+
   constructor(private gameStateSvc: GameStateService) { }
 
   doUndo() {

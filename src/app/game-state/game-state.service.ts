@@ -20,7 +20,16 @@ export class GameStateService {
   initState(def: ProblemDef, puzzleId: number) {
     const matrices = createMatrices();
     const elements = new Map(matrices.flatMap(x => x.flatMap(y => y.elems.flat())).map(x => [x.elemId, x]));
-    const gameState: GameState = { action: 'init', def, elements, history: [], matrices, puzzleId };
+    const gameState: GameState = {
+      action: 'init',
+      def,
+      elements,
+      history: [],
+      matrices,
+      priorElapsedMs: 0,
+      puzzleId,
+      sessionStart: new Date()
+    };
     this.gameState$.next(gameState);
     this.restoreGame();
 
@@ -58,14 +67,16 @@ export class GameStateService {
   }
   restoreGame() {
     const gs = this.gameState$.value;
-    if (gs) {
+    const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
+    const savedGame = gs ? savedGames[gs.puzzleId] : undefined;
+    if (gs && savedGame) {
       this.restartCommon(gs);
-      const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
       gs.history = savedGames[gs.puzzleId]?.history || [];
       gs.history.forEach(x => {
         const elem = gs.elements.get(x.elemId)!;
         elem.explicitState = elem.visibleState = x.currentState;
       });
+      gs.priorElapsedMs = savedGame.elapsedMs;
       gs.matrices.flat().forEach(x => this.setImpliedStates(x));
       this.validateGame(gs);
       this.finalizeUpdate(gs);
@@ -169,13 +180,16 @@ export class GameStateService {
       x.explicitState = x.visibleState = 'open';
       x.validationError = undefined;
     });
+    gs.priorElapsedMs = 0;
+    gs.sessionStart = new Date();
     gs.hasErrors = false;
   }
   private saveGame() {
     const gs = this.gameState$.value;
     if (gs) {
       const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
-      savedGames[gs.puzzleId] = { history: gs.history, puzzleId: gs.puzzleId };
+      const elapsedMs = gs.priorElapsedMs + (new Date().valueOf() - gs.sessionStart.valueOf());
+      savedGames[gs.puzzleId] = { elapsedMs, history: gs.history, puzzleId: gs.puzzleId };
       this.storageSvc.set(GameStateService.gameStatesCacheKey, savedGames);
     }
   }
