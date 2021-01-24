@@ -82,6 +82,17 @@ export class GameStateService {
       this.finalizeUpdate(gs);
     }
   }
+
+  /** saves current game if active. */
+  saveGame() {
+    const gs = this.gameState$.value;
+    if (gs) {
+      const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
+      const elapsedMs = gs.priorElapsedMs + (new Date().valueOf() - gs.sessionStart.valueOf());
+      savedGames[gs.puzzleId] = { elapsedMs, history: gs.history, puzzleId: gs.puzzleId };
+      this.storageSvc.set(GameStateService.gameStatesCacheKey, savedGames);
+    }
+  }
   /** Toggles an element to next available state. */
   toggleState(elemId: number) {
     const elem = this.gameState$.value?.elements.get(elemId);
@@ -183,15 +194,6 @@ export class GameStateService {
     gs.priorElapsedMs = 0;
     gs.sessionStart = new Date();
     gs.hasErrors = false;
-  }
-  private saveGame() {
-    const gs = this.gameState$.value;
-    if (gs) {
-      const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
-      const elapsedMs = gs.priorElapsedMs + (new Date().valueOf() - gs.sessionStart.valueOf());
-      savedGames[gs.puzzleId] = { elapsedMs, history: gs.history, puzzleId: gs.puzzleId };
-      this.storageSvc.set(GameStateService.gameStatesCacheKey, savedGames);
-    }
   }
 
   /** Sets visibleStates on items in matrix that are open. */

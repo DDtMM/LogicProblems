@@ -32,7 +32,7 @@ export class TimerComponent implements OnInit, OnDestroy {
         startWith(initialTime)
       );
     }),
-    map(totalTime => formatTimespan(totalTime, 'h?:m:ss')),
+    map(totalTime => formatTimespan(totalTime, 'h:m!:ss')),
   );
 
   private destroyedSubject = new Subject();

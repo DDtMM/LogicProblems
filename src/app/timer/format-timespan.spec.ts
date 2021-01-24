@@ -1,4 +1,3 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { formatTimespan } from './format-timespan';
 
 
@@ -23,16 +22,22 @@ describe('formatTimespan', () => {
     expect(formatTimespan(7324999, 'hhhh mmm')).toEqual('0002 002');
   });
   it('should not display optional parts when zero valued and there are not more non-zero signficant parts.', () => {
-    expect(formatTimespan(4999, 'm?:s?.S')).toEqual('4.999');
+    expect(formatTimespan(4999, 'm:s.S')).toEqual('4.999');
+  });
+  it('should display zero parts when zero valued and preceeded by a !.', () => {
+    expect(formatTimespan(4999, '!m:s.S')).toEqual('0:04.999');
+  });
+  it('should display all static parts when preceeded by a !.', () => {
+    expect(formatTimespan(4999, 'NO!YEP m:s.S')).toEqual('YEP 0:04.999');
   });
   it('should display optional parts as a full length zero when a more significant part is non-zero and not preceeded by whitespace', () => {
-    expect(formatTimespan(120999, 'm?:s?.S')).toEqual('2:00.999');
+    expect(formatTimespan(120999, 'm:s.S')).toEqual('2:00.999');
   });
   it('should display parts as full length when preceeded by whitespace.', () => {
-    expect(formatTimespan(120999, 'm s?.S')).toEqual('2 0.999');
+    expect(formatTimespan(120999, 'm s.S')).toEqual('2 0.999');
   });
   it('should respect configured part limit, even when there is not a more significant number.', () => {
-    expect(formatTimespan(120999, 's.S')).toEqual('0.999');
+    expect(formatTimespan(120999, '!s.S')).toEqual('0.999');
   });
   it('should escape an character following a slash as the character.', () => {
     expect(formatTimespan(4000, 's \\second\\s')).toEqual('4 seconds');

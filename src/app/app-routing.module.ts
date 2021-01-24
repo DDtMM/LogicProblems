@@ -10,6 +10,7 @@ const routes: Routes = [
   {
     path: 'puzzles/:puzzleIdx',
     canActivate: [PuzzleGuard],
+    canDeactivate: [PuzzleGuard],
     children: [
       { path: '', component: ProblemHostComponent },
       { path: '', component: GameMenuComponent, outlet: 'menu' }

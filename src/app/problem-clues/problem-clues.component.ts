@@ -6,6 +6,7 @@ import { ProblemClue } from '../models/problem-clue';
   templateUrl: './problem-clues.component.html'
 })
 export class ProblemCluesComponent {
+  /** we should probably pull this from game state. */
   @Input()
   clues?: ProblemClue[];
 }

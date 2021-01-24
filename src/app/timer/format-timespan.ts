@@ -30,92 +30,116 @@ const orderedTimeConfig: TimeConfigItemCalculated[] = ([
 /** orderedConfig mapped to symbols. */
 const symbolMap = new Map(orderedTimeConfig.map(x => [x.symbol, x]));
 /** finds tokens in format string. */
-const tokenizer = new RegExp(`\\\\.|${orderedTimeConfig.map(x => `${x.symbol}+\\??`).join('|')}|.+?`, 'g');
+const tokenizer = new RegExp(`\\\\.|${orderedTimeConfig.map(x => `${x.symbol}+\\??`).join('|')}|!|.+?`, 'g');
 
 
 /** formats milliseconds as a time
  * h = hours, m = minutes, s = seconds, S = milliseconds.
  * Repeating a symbol will control length.  for example mm will be two digits (if there is an hour).
- * Append ? char to make the part optional.
+ * Anything that follows a ! is required.
  * Delimiters will only be added if time part is in front (like thousands seperators).
  */
 export function formatTimespan(timespanMs: number, format: string) {
   const formatParts = parseFormat(format);
-  // keep track if a time part has been added.  Once one has the rest are no longer optional.
-  let hasAddedTimePart = false;
+  // If a time part has been added, the all the rest are no longer optional.
+  let allForwardAreRequired = false;
   // keep track if the last static part ends in white space.  Effects if the next part should be full length.
   let endsInWhiteSpace = true;
   return formatParts.map(fp => {
-    if (typeof fp === 'string') {
+    if (fp.type === 'static') {
       // only add static content if a time part has been added.
       // The reason is because the static parts are supposed to be delimiters
-      if (hasAddedTimePart) {
-        endsInWhiteSpace = /\s$/.test(fp);
-        return fp;
+      if (allForwardAreRequired || !fp.optional) {
+        endsInWhiteSpace = /\s$/.test(fp.content);
+        allForwardAreRequired = true; // once an item is added then all forward items are required.
+        return fp.content;
       }
       else {
         endsInWhiteSpace = true;
         return '';
       }
     }
-    const totalValue = Math.floor(timespanMs / fp.config.base);
-    const value = (fp.config.limit) ? totalValue % fp.config.limit : totalValue;
-    if (hasAddedTimePart || value !== 0 || !fp.optional) {
-      const length = (fp.config.length && hasAddedTimePart && !endsInWhiteSpace) ? fp.config.length : fp.length;
-      hasAddedTimePart = true;
-      return value.toString().padStart(length, '0');
+    else {
+      const totalValue = Math.floor(timespanMs / fp.config.base);
+      const value = (fp.config.limit) ? totalValue % fp.config.limit : totalValue;
+      if (allForwardAreRequired || value !== 0 || !fp.optional) {
+        const length = (fp.config.length && allForwardAreRequired && !endsInWhiteSpace) ? fp.config.length : fp.length;
+        allForwardAreRequired = true; // once an item is added then all forward items are required.
+        return value.toString().padStart(length, '0');
+      }
     }
     return '';
   }).join('');
 }
 
-interface FormatPart {
+interface FormatTimePart {
   config: TimeConfigItemCalculated;
   length: number;
   optional: boolean;
+  type: 'time';
+}
+interface FormatStaticPart {
+  content: string;
+  optional: boolean;
+  type: 'static';
 }
 
-function parseFormat(format: string) {
+function parseFormat(format: string): (FormatTimePart | FormatStaticPart)[] {
   const tokens = tokenize(format);
+  let isOptional = true;
   return Array.from(tokens)
     .map(x => {
-      if (x.type === 'static') {
-        return x.content;
+      switch (x.type) {
+        case 'static':
+          return { content: x.content, optional: isOptional, type: 'static' } as FormatStaticPart;
+        case 'required':
+          isOptional = false;
+          return undefined;
+        case 'timepart':
+          return {
+            config: x.config,
+            length: x.symbol.length,
+            optional: isOptional,
+            type: 'time'
+          } as FormatTimePart;
       }
-      const optional = x.symbol.endsWith('?');
-      return {
-        config: x.config,
-        length: x.symbol.length - (optional ? 1 : 0),
-        optional
-      } as FormatPart;
-    });
+    })
+    .filter((x): x is FormatTimePart | FormatStaticPart => x != null); // remove empty results
 }
-
+interface RequiredToken {
+  type: 'required';
+}
+interface StaticToken {
+  content: string;
+  type: 'static';
+}
+interface TimePartToken {
+  config: TimeConfigItemCalculated;
+  symbol: string;
+  type: 'timepart';
+}
 /** Uses tokenizer to create tokens. */
-function* tokenize(format: string) {
-  interface StaticToken {
-    content: string;
-    type: 'static';
-  }
-  interface TimePartToken {
-    config: TimeConfigItemCalculated;
-    symbol: string;
-    type: 'timepart';
-  }
-
+function* tokenize(format: string): Generator<RequiredToken | StaticToken | TimePartToken> {
   let match: RegExpExecArray | null;
   // reset tokenizer.
   tokenizer.lastIndex = 0;
   while ((match = tokenizer.exec(format)) !== null) {
     const symbol = match[0];
-    if (symbol[0] === '\\') {
-      yield { content: symbol.substring(1), type: 'static' } as StaticToken;
+    const firstChar = symbol[0];
+    if (firstChar === '\\') {
+      yield { content: symbol.substring(1), type: 'static' };
     }
-    else if (symbolMap.has(symbol[0])) {
-      yield { config: symbolMap.get(symbol[0])!, symbol, type: 'timepart' } as TimePartToken;
+    else if (symbolMap.has(firstChar)) {
+      yield { config: symbolMap.get(firstChar)!, symbol, type: 'timepart' };
+    }
+    else if (firstChar === '!') {
+      yield { type: 'required' } as RequiredToken;
+      if (symbol.length > 1) {
+        yield { content: symbol.substring(0, symbol.length - 1), type: 'static' };
+      }
     }
     else {
-      yield { content: symbol, type: 'static' } as StaticToken;
+      yield { content: symbol, type: 'static' };
     }
   }
 }

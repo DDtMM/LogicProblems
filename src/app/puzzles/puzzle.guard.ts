@@ -1,27 +1,32 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { ActivatedRouteSnapshot, CanActivate, CanDeactivate } from '@angular/router';
+
 import { GameStateService } from '../game-state/game-state.service';
 import { PuzzlesService } from './puzzles.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PuzzleGuard implements CanActivate {
+export class PuzzleGuard implements CanActivate, CanDeactivate<unknown> {
   constructor(private puzzlesSvc: PuzzlesService, private gameStateSvc: GameStateService) {
 
   }
 
+  /** Use the guard to make sure puzzleIdx is valid.  If so, update game state. */
   canActivate(
-    route: ActivatedRouteSnapshot): Observable<boolean> {
+    route: ActivatedRouteSnapshot): boolean {
     const puzzleIdx = parseInt(route.paramMap.get('puzzleIdx') ?? '-1', 10);
-    if (isNaN(puzzleIdx) || puzzleIdx < 0) {
-      return of(false);
+    const puzzle = this.puzzlesSvc.puzzles[puzzleIdx];
+    if (!puzzle) {
+      return false;
     }
-    return this.puzzlesSvc.puzzles[puzzleIdx].def$.pipe(
-      tap(x => this.gameStateSvc.initState(x, puzzleIdx)),
-      map(x => !!x)
-    );
+    this.gameStateSvc.initState(puzzle.def, puzzleIdx);
+    return true;
+  }
+
+  /** Use the gaurd as a way to save the currently active game. */
+  canDeactivate(): boolean {
+    this.gameStateSvc.saveGame();
+    return true;
   }
 }
