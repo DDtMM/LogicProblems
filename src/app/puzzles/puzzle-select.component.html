@@ -1,5 +1,7 @@
 <ul class="list-group">
   <li class="list-group-item" *ngFor="let puzzle of puzzles; let idx = index" [routerLink]="['/puzzles', idx]">
     {{puzzle.label}}
+    <button class="btn btn-primary py-0" (click)="problemInfo.def = puzzle.def; problemInfo.show(); $event.stopPropagation()">?</button>
   </li>
 </ul>
+<app-problem-info #problemInfo></app-problem-info>

@@ -18,8 +18,8 @@ export interface PuzzleConfigItem {
 export const PUZZLES = new InjectionToken<PuzzleConfigItem[]>('Puzzle configuration info',
   {
     factory: () => [
-      { label: 'Cookies', def: sample1 },
-      { label: 'Small', def: sampleSmall }
+      { label: sample1.name, def: sample1 },
+      { label: sampleSmall.name, def: sampleSmall }
     ]
   }
 );

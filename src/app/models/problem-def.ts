@@ -30,4 +30,6 @@ export interface ProblemClueSpan {
 export interface ProblemDef {
   categories: ProblemCategory[];
   clues: ProblemClue[];
+  description?: string;
+  name: string;
 }

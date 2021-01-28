@@ -1,4 +1,6 @@
 {
+  "name": "Cookies for Christmas",
+  "description": "Danny's family recieved a box of gourmet cookies for Christmas.  The box contained five cookies and since there were five of them (Danny, his wife Stephanie, son Andre, daughter Amelia and dog Kiddo), they decided to each have one on the next day.\n\nFigure out who had which cookie, with what drink, and at what time of day.",
   "categories": [
     {
       "categoryId": "people",

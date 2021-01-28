@@ -14,6 +14,7 @@ Class logic puzzles game.  Fun for people ages 8 through 88.
 * Themes
 * Tracks time played.
 * Cross out clues.
+* View problem descriptions
 
 ## TODO
 * Check answer.

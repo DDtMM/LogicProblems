@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { PuzzleSelectComponent } from './puzzles/puzzle-select.component';
 import { GameMenuComponent } from './game-menu/game-menu.component';
 import { TimerComponent } from './timer/timer.component';
+import { ProblemInfoComponent } from './problem-info/problem-info.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TimerComponent } from './timer/timer.component';
     ThemeSwitcherComponent,
     PuzzleSelectComponent,
     GameMenuComponent,
-    TimerComponent
+    TimerComponent,
+    ProblemInfoComponent
   ],
   imports: [
     BrowserModule,
