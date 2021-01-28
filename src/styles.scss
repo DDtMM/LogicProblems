@@ -7,6 +7,7 @@ body {
   height: 100vh;
   max-height: 100vh;
 }
+
 @each $theme, $themeMap in $themes {
   $backgroundColor: map-get($themeMap, backgroundColor);
   $colorX: map-get($themeMap, colorX);

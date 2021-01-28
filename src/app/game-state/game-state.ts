@@ -1,10 +1,18 @@
-import { IdType } from '../models/id-type';
-import { ProblemCategory } from '../models/problem-category';
-import { ProblemDef } from '../models/problem-def';
+import { ProblemCategory, ProblemDef } from '../models/problem-def';
 
-export type GameAction = 'init' | 'update';
+export type GameAction = 'init' | 'updateElem' | 'updateClue';
 export type ElemStateValue = 'accept' | 'open' | 'reject';
 export type ValidationError = 'dimensionRejected' | 'multipleAccepted';
+
+
+export interface ClueSpanState {
+  /** Index of the clue. */
+  clueIdx: number;
+  /** Has the clue been crossed out. */
+  isExcluded?: boolean;
+  /** Index of the span in the clue. */
+  spanIdx: number;
+}
 
 export interface GameStateHistoryItem {
   currentState: ElemStateValue;
@@ -14,6 +22,7 @@ export interface GameStateHistoryItem {
 
 export interface SavedGame {
   /** number of elapsed milliseconds. */
+  clueSpans: ClueSpanState[];
   elapsedMs: number;
   history: GameStateHistoryItem[];
   puzzleId: number;
@@ -26,6 +35,7 @@ export interface SavedGames {
 export interface GameState {
   /** The last action. */
   action: GameAction;
+  clueSpans: ClueSpanState[];
   def: ProblemDef;
   elements: Map<number, ElemState>;
   /** If true then there are errors. */

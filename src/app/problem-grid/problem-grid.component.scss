@@ -3,11 +3,13 @@
 
 // this is synced with problem-host flex direction so that it takes up full space on the cross direction.
 svg {
-  width: 100%;
+  //width: 100%;
   user-select: none;
-  @media (min-aspect-ratio: 8/9) {
-    width: unset;
-    height: 100%;
+  @media not print {
+    @media (min-aspect-ratio: 8/9) {
+      width: unset;
+      height: 100%;
+    }
   }
 }
 text {

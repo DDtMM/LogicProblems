@@ -1,9 +1,21 @@
 <div class="h-100">
   <div>
-    <ul class="list-group">
-      <li class="list-group-item" *ngFor="let clue of clues">
-        {{clue.content}}
+    <ol class="list-group">
+      <li class="list-group-item d-flex flex-row"
+        *ngFor="let clueSpans of vm$ | async; let index = index"
+        (click)="toggleClue(clueSpans)">
+        <div class="num-part" >
+          {{index + 1}}.
+        </div>
+        <div class="clue-part">
+          <span class="clue-span" *ngFor="let span of clueSpans"
+            (click)="toggleSpan(span); $event.stopPropagation();"
+            [ngClass]="span.isExcluded ? 'is-excluded' : ''">
+            {{span.content}}
+          </span>
+        </div>
+
       </li>
-    </ul>
+    </ol>
   </div>
 </div>

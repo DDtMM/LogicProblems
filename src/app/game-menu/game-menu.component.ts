@@ -24,7 +24,7 @@ export class GameMenuComponent {
   constructor(private gameStateSvc: GameStateService) { }
 
   doUndo() {
-    this.gameStateSvc.undoState();
+    this.gameStateSvc.undoElemState();
   }
 
   restart() {

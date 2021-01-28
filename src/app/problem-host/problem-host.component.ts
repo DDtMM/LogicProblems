@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GameStateService } from '../game-state/game-state.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,7 +8,5 @@ import { GameStateService } from '../game-state/game-state.service';
 })
 export class ProblemHostComponent {
 
-  readonly gameState$ = this.gameStateSvc.gameState$;
-
-  constructor(private gameStateSvc: GameStateService) { }
+  constructor() { }
 }

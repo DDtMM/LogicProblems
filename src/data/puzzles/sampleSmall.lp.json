@@ -29,8 +29,10 @@
     }
   ],
   "clues": [
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" }
+    {
+      "spans": [
+        { "content": "This is a clue" }
+      ]
+    }
   ]
 }

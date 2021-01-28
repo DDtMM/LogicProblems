@@ -18,9 +18,9 @@ interface TimeConfigItemCalculated extends TimeConfigItem {
 /** Time parts ordered  */
 const orderedTimeConfig: TimeConfigItemCalculated[] = ([
   { base: 3600000, symbol: 'h' }, // hours
-  { delim: ':', length: 2, base: 60000, max: 59, symbol: 'm' }, // minutes
-  { delim: ':', length: 2, base: 1000, max: 59, symbol: 's' }, // seconds
-  { delim: '.', length: 3, base: 1, max: 999, symbol: 'S' } // milliseconds
+  { delim: ':', base: 60000, max: 59, symbol: 'm' }, // minutes
+  { delim: ':', base: 1000, max: 59, symbol: 's' }, // seconds
+  { delim: '.', base: 1, max: 999, symbol: 'S' } // milliseconds
 ] as TimeConfigItem[]).map(x => ({
   ...x,
   limit: x.max ? x.max + 1 : undefined,

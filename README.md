@@ -12,6 +12,8 @@ Class logic puzzles game.  Fun for people ages 8 through 88.
 * Save game progress.
 * Scalable grid
 * Themes
+* Tracks time played.
+* Cross out clues.
 
 ## TODO
 * Check answer.
@@ -22,11 +24,12 @@ Class logic puzzles game.  Fun for people ages 8 through 88.
 * Flags
   * Toggle squares with color.
   * Clear all with button.
-* Home screen
-* Navigation
+* Home screen - Right now the home screen is just a list of puzzles.
+* Navigation 
 * Real Puzzles
-* Puzzles in one file/bundled.
-* Track time played.
+* Printable
+  * Made an attempt.  Don't know if this is possible.  Can't layout to fit in page.  
+  * Maybe a version of the clues that are all svg and fitted to an area?
 
 ## Future
 

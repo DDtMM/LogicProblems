@@ -33,7 +33,7 @@ export class ProblemGridComponent {
 
   /** This is temporarilary updating the vm.  It should update a state. */
   toggleState(elem: ProblemGridElemVm) {
-    this.gameStateSvc.toggleState(elem.elemId);
+    this.gameStateSvc.toggleElemState(elem.elemId);
   }
 
 }

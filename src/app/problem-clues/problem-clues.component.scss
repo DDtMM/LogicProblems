@@ -1,0 +1,22 @@
+li {
+  user-select: none;
+  cursor: pointer;
+}
+.num-part {
+  width: 4em;
+  text-align: right;
+  padding-right: 1em;
+}
+
+.clue-span {
+  &.is-excluded {
+    text-decoration: line-through;
+  }
+  &:not(:last-child)::after {
+    content: '\00a0'; // add an extra space to seperate sentances.
+  }
+  &:hover {
+    color: red;
+  }
+}
+

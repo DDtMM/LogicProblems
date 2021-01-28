@@ -1,6 +1,5 @@
 import { ElemStateValue, ValidationError } from '../game-state/game-state';
-import { ProblemCategory } from '../models/problem-category';
-import { ProblemItem } from '../models/problem-item';
+import { ProblemCategory, ProblemItem } from '../models/problem-def';
 
 export interface Point2d {
   x: number;

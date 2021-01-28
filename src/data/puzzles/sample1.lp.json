@@ -46,19 +46,11 @@
     }
   ],
   "clues": [
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" },
-    { "content": "This is a clue" },
-    { "content": "This is a much longer clue that will hopefully take up multiple lines!" }
+    {
+      "spans": [
+        { "content": "Danny really didn't want so share his cookie, so he waited to eat his until everybody else had eaten theirs and fallen asleep." },
+        { "content": "Amelia was so excited to eat her cookie that she had her before anybody else had waken up."}
+      ]
+    }
   ]
 }

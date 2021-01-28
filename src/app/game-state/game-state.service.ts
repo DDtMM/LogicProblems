@@ -2,8 +2,18 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from 'ngx-localstorage';
 import { BehaviorSubject } from 'rxjs';
+
 import { ProblemDef } from '../models/problem-def';
-import { ElemState, ElemStateValue, GameState, GameStateMatrix, SavedGame, SavedGames, ValidationError } from './game-state';
+import {
+  ClueSpanState,
+  ElemState,
+  ElemStateValue,
+  GameAction,
+  GameState,
+  GameStateMatrix,
+  SavedGames,
+  ValidationError,
+} from './game-state';
 
 
 @Injectable({
@@ -19,9 +29,11 @@ export class GameStateService {
 
   initState(def: ProblemDef, puzzleId: number) {
     const matrices = createMatrices();
+    const clueSpans = def.clues.map((clue, clueIdx) => clue.spans.map((_, spanIdx) => ({ clueIdx, spanIdx } as ClueSpanState))).flat();
     const elements = new Map(matrices.flatMap(x => x.flatMap(y => y.elems.flat())).map(x => [x.elemId, x]));
     const gameState: GameState = {
       action: 'init',
+      clueSpans,
       def,
       elements,
       history: [],
@@ -62,7 +74,7 @@ export class GameStateService {
     const gs = this.gameState$.value;
     if (gs) {
       this.restartCommon(gs);
-      this.finalizeUpdate(gs);
+      this.finalizeUpdate(gs, 'updateElem');
     }
   }
   restoreGame() {
@@ -71,6 +83,8 @@ export class GameStateService {
     const savedGame = gs ? savedGames[gs.puzzleId] : undefined;
     if (gs && savedGame) {
       this.restartCommon(gs);
+      gs.clueSpans.forEach(x => x.isExcluded =
+        savedGame.clueSpans.find(y => y.clueIdx === x.clueIdx && y.spanIdx === x.spanIdx)?.isExcluded);
       gs.history = savedGames[gs.puzzleId]?.history || [];
       gs.history.forEach(x => {
         const elem = gs.elements.get(x.elemId)!;
@@ -79,7 +93,7 @@ export class GameStateService {
       gs.priorElapsedMs = savedGame.elapsedMs;
       gs.matrices.flat().forEach(x => this.setImpliedStates(x));
       this.validateGame(gs);
-      this.finalizeUpdate(gs);
+      this.finalizeUpdate(gs, 'updateElem');
     }
   }
 
@@ -89,30 +103,37 @@ export class GameStateService {
     if (gs) {
       const savedGames: SavedGames = this.storageSvc.get(GameStateService.gameStatesCacheKey) || {};
       const elapsedMs = gs.priorElapsedMs + (new Date().valueOf() - gs.sessionStart.valueOf());
-      savedGames[gs.puzzleId] = { elapsedMs, history: gs.history, puzzleId: gs.puzzleId };
+      savedGames[gs.puzzleId] = { elapsedMs, clueSpans: gs.clueSpans, history: gs.history, puzzleId: gs.puzzleId };
       this.storageSvc.set(GameStateService.gameStatesCacheKey, savedGames);
     }
   }
   /** Toggles an element to next available state. */
-  toggleState(elemId: number) {
+  toggleElemState(elemId: number) {
     const elem = this.gameState$.value?.elements.get(elemId);
     if (elem) {
       const nextIndex = (GameStateService.orderedStates.indexOf(elem.visibleState) + 1) % GameStateService.orderedStates.length;
       const nextState = GameStateService.orderedStates[nextIndex];
-      this.updateState(elemId, nextState);
+      this.updateElemState(elemId, nextState);
     }
   }
-
+  updateClueSpanState(clueIdx: number, spanIdx: number, isExcluded: boolean) {
+    const gs = this.gameState$.value;
+    const clueSpan = gs?.clueSpans.find(x => x.clueIdx === clueIdx && x.spanIdx === spanIdx);
+    if (gs && clueSpan) {
+      clueSpan.isExcluded = isExcluded;
+      this.finalizeUpdate(gs, 'updateClue');
+    }
+  }
   /** Undos the latest item in history if it exists. */
-  undoState() {
+  undoElemState() {
     const historyItem = this.gameState$.value?.history.pop();
     if (historyItem) {
-      this.updateState(historyItem.elemId, historyItem.priorState, true);
+      this.updateElemState(historyItem.elemId, historyItem.priorState, true);
     }
   }
 
   /** Updates an element's state and emits the change notification. */
-  updateState(elemId: number, nextState: ElemStateValue, ignoreHistory?: boolean) {
+  updateElemState(elemId: number, nextState: ElemStateValue, ignoreHistory?: boolean) {
     const gs = this.gameState$.value;
     const elem = gs?.elements.get(elemId);
     if (gs && elem) {
@@ -123,7 +144,7 @@ export class GameStateService {
       if (!ignoreHistory) {
         gs.history.push({ currentState: nextState, elemId, priorState });
       }
-      this.finalizeUpdate(gs);
+      this.finalizeUpdate(gs, 'updateElem');
     }
   }
 
@@ -179,14 +200,15 @@ export class GameStateService {
     };
   }
 
-  private finalizeUpdate(gs: GameState) {
+  private finalizeUpdate(gs: GameState, action: GameAction) {
     this.saveGame();
-    gs.action = 'update';
+    gs.action = action;
     this.gameState$.next(gs);
   }
 
   private restartCommon(gs: GameState) {
     gs.history.length = 0;
+    gs.clueSpans.forEach(x => x.isExcluded = false);
     gs.elements.forEach(x => {
       x.explicitState = x.visibleState = 'open';
       x.validationError = undefined;

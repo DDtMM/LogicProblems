@@ -1,6 +1,6 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { ElemState, GameStateMatrix } from '../game-state/game-state';
-import { ProblemCategory } from '../models/problem-category';
+import { ProblemCategory } from '../models/problem-def';
 import { ProblemCategoryVm, ProblemGridElemVm, ProblemGridVm } from './problem-grid-vm';
 
 export function gameStateToGridVm(gameStateMatrices: GameStateMatrix[][], baseUnit: number, itemLabelMultiplier: number): ProblemGridVm {
