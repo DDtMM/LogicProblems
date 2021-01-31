@@ -1,15 +1,15 @@
 {
   "name": "Cookies for Christmas",
-  "description": "Danny's family recieved a box of gourmet cookies for Christmas.  The box contained five cookies and since there were five of them (Danny, his wife Stephanie, son Andre, daughter Amelia and dog Kiddo), they decided to each have one on the next day.\n\nFigure out who had which cookie, with what drink, and at what time of day.",
+  "description": "Dennis's family recieved a box of gourmet cookies for Christmas.  The box contained five cookies and since there were five of them (Dennis, his wife Suzanne, son Buddy, daughter Alice and dog Frankie), they decided to each have one on the next day.\n\nFigure out who had which cookie, with what drink, and at what time of day.",
   "categories": [
     {
       "categoryId": "people",
       "items": [
-        { "label": "Andre", "solutionGroupId": 1 },
-        { "label": "Danny", "solutionGroupId": 2 },
-        { "label": "Amelia", "solutionGroupId": 3 },
-        { "label": "Stephanie", "solutionGroupId": 4 },
-        { "label": "Kiddo", "solutionGroupId": 5 }
+        { "label": "Alice", "solutionGroupId": 3 },
+        { "label": "Buddy", "solutionGroupId": 1 },
+        { "label": "Dennis", "solutionGroupId": 2 },
+        { "label": "Frankie", "solutionGroupId": 5 },
+        { "label": "Suzanne", "solutionGroupId": 4 }
       ],
       "label": "People"
     },
@@ -17,9 +17,9 @@
       "categoryId": "cookies",
       "items": [
         { "label": "Chocolate Chip", "solutionGroupId": 2 },
-        { "label": "Peanut Butter", "solutionGroupId": 5 },
         { "label": "Double Chocalate", "solutionGroupId": 3 },
         { "label": "Oatmeal Raisin", "solutionGroupId": 4 },
+        { "label": "Peanut Butter", "solutionGroupId": 5 },
         { "label": "Sugar", "solutionGroupId": 1 }
       ],
       "label": "Cookies"
@@ -27,10 +27,10 @@
     {
       "categoryId": "drinks",
       "items": [
-        { "label": "Chocolate Milk", "solutionGroupId": 3 },
-        { "label": "Milk", "solutionGroupId": 1 },
-        { "label": "Coke", "solutionGroupId": 2 },
         { "label": "Almond Milk", "solutionGroupId": 4 },
+        { "label": "Chocolate Milk", "solutionGroupId": 3 },
+        { "label": "Coke", "solutionGroupId": 2 },
+        { "label": "Sprite", "solutionGroupId": 1 },
         { "label": "Water", "solutionGroupId": 5 }
       ],
       "label": "Drink"
@@ -50,8 +50,37 @@
   "clues": [
     {
       "spans": [
-        { "content": "Danny really didn't want so share his cookie, so he waited to eat his until everybody else had eaten theirs and fallen asleep." },
-        { "content": "Amelia was so excited to eat her cookie that she had her before anybody else had waken up."}
+        { "content": "Dennis really didn't want so share his cookie, so he waited until everybody else had eaten theirs and gone to sleep to have his.  " },
+        { "content": "Alice was so excited to eat her cookie that she had her before anybody else had waken up."}
+      ]
+    },
+    {
+      "spans": [
+        { "content": "No member of the household was given anything that might make them sick, so the family dog Frankie wasn't given anything with chocolate or raisins, "},
+        { "content": "and Dennis was going to have anything that might trigger his nut allergy."}
+      ]
+    },
+    {
+      "spans": [
+        { "content": "The kids (and their father) agreed - cookies are not cookies if they have fruit in them and would not eat one if it did." }
+      ]
+    },
+    {
+      "spans": [
+        { "content": "Alice wouldn't eat or drink anything unless it had something chocolate in it.  " },
+        { "content": "The apple didn't fall far from the tree as Buddy and one of his parents had soda with their cookies.  " },
+        { "content": "His parents would've said something, but it looked like he was drinking water.  " },
+        { "content": "Frankie drank from her usual bowl of water."}
+      ]
+    },
+    {
+      "spans": [
+        { "content": "Buddy was dissapointed when the double chocolate cookie was already gone, but not as dissapointed as his father since nothing with chocolate was left by the time he got around to having a cookie." }
+      ]
+    },
+    {
+      "spans": [
+        { "content": "Suzanne had to wait until after kids to have her cookie.  When she was done, she remembered to put Frankie's cookie in her bowl." }
       ]
     }
   ]

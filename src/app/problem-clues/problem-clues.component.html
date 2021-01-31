@@ -4,14 +4,14 @@
       <li class="list-group-item d-flex flex-row"
         *ngFor="let clueSpans of vm$ | async; let index = index"
         (click)="toggleClue(clueSpans)">
-        <div class="num-part" >
+        <div class="num-part flex-grow-1" >
           {{index + 1}}.
         </div>
         <div class="clue-part">
           <span class="clue-span" *ngFor="let span of clueSpans"
             (click)="toggleSpan(span); $event.stopPropagation();"
             [ngClass]="span.isExcluded ? 'is-excluded' : ''">
-            {{span.content}}
+            <span>{{span.content}}</span>
           </span>
         </div>
 

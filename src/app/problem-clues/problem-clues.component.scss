@@ -3,17 +3,18 @@ li {
   cursor: pointer;
 }
 .num-part {
-  width: 4em;
+  min-width: 3em;
+  max-width: 3em;
   text-align: right;
   padding-right: 1em;
 }
 
 .clue-span {
+  > span {
+    white-space: pre-wrap;
+  }
   &.is-excluded {
     text-decoration: line-through;
-  }
-  &:not(:last-child)::after {
-    content: '\00a0'; // add an extra space to seperate sentances.
   }
   &:hover {
     color: red;
